@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Virtual Zoo ASSAD Registration</title>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Spline+Sans:wght@300;400;500;600;700&family=Noto+Sans:wght@400;500;600;700&display=swap"
+        rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+    tailwind.config = {
+        darkMode: "class",
+        theme: {
+            extend: {
+                colors: {
+                    "primary": "#38e07b",
+                    "background-light": "#f6f8f7",
+                    "background-dark": "#122017",
+                    "surface-dark": "#29382f",
+                    "text-muted": "#9eb7a8"
+                },
+                fontFamily: {
+                    "display": ["Spline Sans", "Noto Sans", "sans-serif"]
+                },
+                borderRadius: {
+                    "DEFAULT": "1rem",
+                    "lg": "2rem",
+                    "xl": "3rem",
+                    "full": "9999px"
+                },
+            },
+        },
+    }
+    </script>
+    <style>
+    ::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+        background: #122017;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: #29382f;
+        border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+        background: #38e07b;
+    }
+    </style>
+</head>
+
+<body
+    class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-white antialiased overflow-hidden h-screen">
+    <div class="h-screen w-full flex flex-col lg:flex-row">
+        <div class="hidden lg:flex lg:w-1/2 relative bg-background-dark flex-col justify-between p-8 overflow-hidden">
+            <div class="absolute inset-0 z-0">
+                <img alt="Close up of a leopard resting on a tree branch in the savanna"
+                    class="w-full h-full object-cover opacity-60 mix-blend-overlay"
+                    data-alt="Close up of a leopard resting on a tree branch in the savanna"
+                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuCXsLRHTjvR50PUHv-mUYuMJra8Hv0Sewdbg5O4UussUKBBPH4n-fDrsPrjeARDIrlVTn029ctL2b9Yxqy1jqCiFdON9Bj6HDRqr7v3lI4-xyu8IN-jZCbI3XCqEh9YC0lyw7Uu7GbyWw2RTYC3Wx7QBS_2RnPmwgZnMXIvyOMEVArTGGcwPDnYtDR_UtI_ytoVCm4vq9uwXVgWjcLSEiyG6lvpYyNdwq2DE4reqSNoYJOvsYSHurauSn6vVwTqa9woCTx2t37--y7B" />
+                <div
+                    class="absolute inset-0 bg-gradient-to-t from-background-dark via-background-dark/60 to-transparent">
+                </div>
+            </div>
+            <div class="relative z-10 flex items-center gap-3">
+                <div
+                    class="size-9 text-primary bg-primary/10 rounded-full flex items-center justify-center backdrop-blur-sm">
+                    <span class="material-symbols-outlined text-xl">pets</span>
+                </div>
+                <div>
+                    <h2 class="text-white text-lg font-bold leading-tight tracking-tight">Virtual Zoo ASSAD.</h2>
+                    <p class="text-primary text-xs font-medium tracking-wide">CAN 2025 OFFICIAL APP</p>
+                </div>
+            </div>
+            <div class="relative z-10 max-w-lg">
+                <h1 class="text-4xl font-black text-white leading-[1.1] tracking-tight mb-4">
+                    Experience the Wild <br />
+                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary to-emerald-400">From
+                        Home</span>
+                </h1>
+                <p class="text-text-muted text-base font-normal leading-relaxed mb-6">
+                    Join thousands of families exploring African wildlife through our interactive virtual tours.
+                </p>
+                <div class="flex flex-wrap gap-5 pt-4 border-t border-surface-dark">
+                    <div class="flex items-center gap-2">
+                        <div class="size-9 rounded-full bg-surface-dark flex items-center justify-center text-primary">
+                            <span class="material-symbols-outlined text-xl">verified_user</span>
+                        </div>
+                        <div class="flex flex-col">
+                            <span class="text-white text-xs font-bold">Secure</span>
+                            <span class="text-text-muted text-xs">Family Safe</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <div class="size-9 rounded-full bg-surface-dark flex items-center justify-center text-primary">
+                            <span class="material-symbols-outlined text-xl">videocam</span>
+                        </div>
+                        <div class="flex flex-col">
+                            <span class="text-white text-xs font-bold">Live Tours</span>
+                            <span class="text-text-muted text-xs">Daily Streams</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div
+            class="flex-1 flex flex-col justify-center items-center p-6 sm:p-8 lg:p-12 bg-[#111714] relative overflow-y-auto">
+            <div class="lg:hidden w-full flex justify-center mb-6">
+                <div class="flex items-center gap-2 text-white">
+                    <div class="size-7 text-primary">
+                        <svg fill="currentColor" viewbox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+                            <path
+                                d="M44 11.2727C44 14.0109 39.8386 16.3957 33.69 17.6364C39.8386 18.877 44 21.2618 44 24C44 26.7382 39.8386 29.123 33.69 30.3636C39.8386 31.6043 44 33.9891 44 36.7273C44 40.7439 35.0457 44 24 44C12.9543 44 4 40.7439 4 36.7273C4 33.9891 8.16144 31.6043 14.31 30.3636C8.16144 29.123 4 26.7382 4 24C4 21.2618 8.16144 18.877 14.31 17.6364C8.16144 16.3957 4 14.0109 4 11.2727C4 7.25611 12.9543 4 24 4C35.0457 4 44 7.25611 44 11.2727Z">
+                            </path>
+                        </svg>
+                    </div>
+                    <h2 class="text-base font-bold">Virtual Zoo ASSAD.</h2>
+                </div>
+            </div>
+            <div class="w-full max-w-md animate-fade-in">
+                <div class="mb-6">
+                    <h2 class="text-white text-3xl font-black leading-tight tracking-[-0.033em] mb-2">Join the Adventure
+                    </h2>
+                    <p class="text-text-muted text-sm font-normal">Create your account for CAN 2025 Virtual Zoo</p>
+                </div>
+                <form class="flex flex-col gap-3.5">
+                    <label class="flex flex-col gap-1.5 group">
+                        <span class="text-white text-sm font-semibold ml-1">Username</span>
+                        <div class="relative">
+                            <input
+                                class="w-full bg-surface-dark text-white placeholder-text-muted/50 h-12 rounded-xl border-none focus:ring-2 focus:ring-primary px-4 pl-11 text-sm font-normal transition-all hover:bg-surface-dark/80"
+                                placeholder="SafariExplorer25" type="text" />
+                            <div
+                                class="absolute inset-y-0 left-3.5 flex items-center pointer-events-none text-text-muted group-focus-within:text-primary transition-colors">
+                                <span class="material-symbols-outlined text-[18px]">person</span>
+                            </div>
+                        </div>
+                    </label>
+                    <label class="flex flex-col gap-1.5 group">
+                        <span class="text-white text-sm font-semibold ml-1">Email Address</span>
+                        <div class="relative">
+                            <input
+                                class="w-full bg-surface-dark text-white placeholder-text-muted/50 h-12 rounded-xl border-none focus:ring-2 focus:ring-primary px-4 pl-11 text-sm font-normal transition-all hover:bg-surface-dark/80"
+                                placeholder="you@example.com" type="email" />
+                            <div
+                                class="absolute inset-y-0 left-3.5 flex items-center pointer-events-none text-text-muted group-focus-within:text-primary transition-colors">
+                                <span class="material-symbols-outlined text-[18px]">mail</span>
+                            </div>
+                        </div>
+                    </label>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+                        <label class="flex flex-col gap-1.5 group">
+                            <span class="text-white text-sm font-semibold ml-1">Password</span>
+                            <div class="relative">
+                                <input
+                                    class="w-full bg-surface-dark text-white placeholder-text-muted/50 h-12 rounded-xl border-none focus:ring-2 focus:ring-primary px-4 pl-11 text-sm font-normal transition-all hover:bg-surface-dark/80"
+                                    placeholder="••••••••" type="password" />
+                                <div
+                                    class="absolute inset-y-0 left-3.5 flex items-center pointer-events-none text-text-muted group-focus-within:text-primary transition-colors">
+                                    <span class="material-symbols-outlined text-[18px]">lock</span>
+                                </div>
+                            </div>
+                        </label>
+                        <label class="flex flex-col gap-1.5 group">
+                            <span class="text-white text-sm font-semibold ml-1">Confirm</span>
+                            <div class="relative">
+                                <input
+                                    class="w-full bg-surface-dark text-white placeholder-text-muted/50 h-12 rounded-xl border-none focus:ring-2 focus:ring-primary px-4 pl-11 text-sm font-normal transition-all hover:bg-surface-dark/80"
+                                    placeholder="••••••••" type="password" />
+                                <div
+                                    class="absolute inset-y-0 left-3.5 flex items-center pointer-events-none text-text-muted group-focus-within:text-primary transition-colors">
+                                    <span class="material-symbols-outlined text-[18px]">lock_reset</span>
+                                </div>
+                            </div>
+                        </label>
+                    </div>
+                    <label class="flex items-start gap-2.5 px-1 mt-1 cursor-pointer group">
+                        <input
+                            class="mt-0.5 rounded border-surface-dark bg-surface-dark text-primary focus:ring-primary focus:ring-offset-background-dark"
+                            type="checkbox" />
+                        <span class="text-xs text-text-muted leading-snug group-hover:text-white transition-colors">
+                            I agree to the <a class="text-primary hover:underline" href="#">Terms of Service</a> and <a
+                                class="text-primary hover:underline" href="#">Privacy Policy</a> for CAN 2025 events.
+                        </span>
+                    </label>
+                    <button
+                        class="group relative flex w-full cursor-pointer items-center justify-center overflow-hidden rounded-full h-12 bg-primary text-[#111714] text-base font-bold leading-normal tracking-[0.015em] mt-2 hover:shadow-[0_0_20px_rgba(56,224,123,0.3)] transition-all duration-300"
+                        type="button">
+                        <span class="truncate z-10">Register Now</span>
+                        <div
+                            class="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+                        </div>
+                        <span
+                            class="material-symbols-outlined ml-2 z-10 group-hover:translate-x-1 transition-transform text-lg">arrow_forward</span>
+                    </button>
+                </form>
+                <div class="mt-5 flex flex-col items-center gap-3">
+                    <p class="text-text-muted text-xs">
+                        Already have an account?
+                        <a class="text-white font-bold hover:text-primary transition-colors ml-1" href="./login.php">Log
+                            In</a>
+                    </p>
+                    <div class=" w-full h-px bg-surface-dark my-1">
+                    </div>
+                    <div class="flex gap-5 text-text-muted">
+                        <a class="text-xs hover:text-white transition-colors" href="#">Help Center</a>
+                        <a class="text-xs hover:text-white transition-colors" href="#">Parental Controls</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
