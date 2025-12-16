@@ -3,7 +3,7 @@ CREATE DATABASE assad;
 USE assad;
 
 CREATE TABLE utilisateur(
-    id INT AUTO_INCREMENT PRIMARY KEY;
+    id INT AUTO_INCREMENT PRIMARY KEY,
     nom VARCHAR(50),
     email VARCHAR(50),
     `role` VARCHAR(50),
@@ -18,7 +18,7 @@ CREATE TABLE visitesguidees(
     capacite_max INT,
     `status` ENUM('admin', 'guide', 'visitor'),
     duree INT,
-    prix DECIMAL
+    prix DECIMAL(10,2)
 );
 
 CREATE TABLE etapesvisite(
@@ -27,7 +27,7 @@ CREATE TABLE etapesvisite(
     descriptionetape TEXT,
     ordreetape INT,
     idvisite INT,
-    FOREIGN KEY (idvisite) REFERENCES visitesguidees(id)
+    FOREIGN KEY (idvisite) REFERENCES visitesguidees(id) ON DELETE CASCADE
 );
 
 CREATE TABLE commentaire(
@@ -37,8 +37,8 @@ CREATE TABLE commentaire(
     note INT,
     texte TEXT,
     date_commentaire DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (idvisiteguides) REFERENCES visitesguidees(id),
-    FOREIGN KEY (idutilisateur) REFERENCES utilisateur(id)
+    FOREIGN KEY (idvisiteguides) REFERENCES visitesguidees(id) ON DELETE CASCADE,
+    FOREIGN KEY (idutilisateur) REFERENCES utilisateur(id) ON DELETE CASCADE
 );
 
 CREATE TABLE reservation(
@@ -47,8 +47,8 @@ CREATE TABLE reservation(
     idutilisateur INT, 
     nbpersonnes INT,
     datereservations DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (idutilisateur) REFERENCES utilisateur(id),
-    FOREIGN KEY (idvisite) REFERENCES visitesguidees(id)
+    FOREIGN KEY (idutilisateur) REFERENCES utilisateur(id) ON DELETE CASCADE,
+    FOREIGN KEY (idvisite) REFERENCES visitesguidees(id) ON DELETE CASCADE
 );
 
 CREATE TABLE habitat(
@@ -68,5 +68,5 @@ CREATE TABLE animal(
     paysorigine VARCHAR(50),
     `description` TEXT,
     id_habitat INT,
-    FOREIGN KEY (id_habitat) REFERENCES habitat(id)
-);
+    FOREIGN KEY (id_habitat) REFERENCES habitat(id) ON DELETE CASCADE
+); 
