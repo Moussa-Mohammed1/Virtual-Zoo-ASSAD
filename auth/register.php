@@ -13,52 +13,57 @@
         rel="stylesheet" />
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <script id="tailwind-config">
-    tailwind.config = {
-        darkMode: "class",
-        theme: {
-            extend: {
-                colors: {
-                    "primary": "#38e07b",
-                    "background-light": "#f6f8f7",
-                    "background-dark": "#122017",
-                    "surface-dark": "#29382f",
-                    "text-muted": "#9eb7a8"
-                },
-                fontFamily: {
-                    "display": ["Spline Sans", "Noto Sans", "sans-serif"]
-                },
-                borderRadius: {
-                    "DEFAULT": "1rem",
-                    "lg": "2rem",
-                    "xl": "3rem",
-                    "full": "9999px"
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#38e07b",
+                        "background-light": "#f6f8f7",
+                        "background-dark": "#122017",
+                        "surface-dark": "#29382f",
+                        "text-muted": "#9eb7a8"
+                    },
+                    fontFamily: {
+                        "display": ["Spline Sans", "Noto Sans", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
                 },
             },
-        },
-    }
+        }
     </script>
+    <link rel="stylesheet" href="/ASSAD/assets/css/styles.css">
     <style>
-    ::-webkit-scrollbar {
-        width: 8px;
-    }
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
 
-    ::-webkit-scrollbar-track {
-        background: #122017;
-    }
+        ::-webkit-scrollbar-track {
+            background: #122017;
+        }
 
-    ::-webkit-scrollbar-thumb {
-        background: #29382f;
-        border-radius: 4px;
-    }
+        ::-webkit-scrollbar-thumb {
+            background: #29382f;
+            border-radius: 4px;
+        }
 
-    ::-webkit-scrollbar-thumb:hover {
-        background: #38e07b;
-    }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #38e07b;
+        }
     </style>
 </head>
 
 <body
     class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-white antialiased overflow-hidden h-screen">
+    <div id="loader">
+        <div class="spinner" aria-hidden="true"></div>
+        <div class="text-sm text-white mt-2">Loading...</div>
+    </div>
     <div class="h-screen w-full flex flex-col lg:flex-row">
         <div class="hidden lg:flex lg:w-1/2 relative bg-background-dark flex-col justify-between p-8 overflow-hidden">
             <div class="absolute inset-0 z-0">
@@ -73,7 +78,69 @@
             <div class="relative z-10 flex items-center gap-3">
                 <div
                     class="size-9 text-primary bg-primary/10 rounded-full flex items-center justify-center backdrop-blur-sm">
-                    <span class="material-symbols-outlined text-xl">pets</span>
+                    <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" fill="#000000"
+                        transform="matrix(-1, 0, 0, 1, 0, 0)">
+                        <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                        <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                        <g id="SVGRepo_iconCarrier">
+                            <title>lion</title>
+                            <g id="lion">
+                                <circle cx="36.5" cy="25.5" r="21.5" style="fill:#e5efef"></circle>
+                                <circle cx="13" cy="7" r="2"
+                                    style="fill:none;stroke:#4c241d;stroke-linecap:round;stroke-linejoin:round;stroke-width:2px">
+                                </circle>
+                                <circle cx="56.044" cy="22.014" r="1.069" style="fill:#4c241d"></circle>
+                                <line x1="53" y1="5" x2="56" y2="8"
+                                    style="fill:none;stroke:#4c241d;stroke-linecap:round;stroke-linejoin:round;stroke-width:2px">
+                                </line>
+                                <line x1="56" y1="5" x2="53" y2="8"
+                                    style="fill:none;stroke:#4c241d;stroke-linecap:round;stroke-linejoin:round;stroke-width:2px">
+                                </line>
+                                <polygon points="9 17 21 17 21 19 15 28 5 27 3 22 7 20 9 17"
+                                    style="fill:#ffce56;stroke:#4c241d;stroke-linecap:round;stroke-linejoin:round;stroke-width:2px">
+                                </polygon>
+                                <path d="M16,34V55h-.862A2.138,2.138,0,0,0,13,57.138V59h7l2.5-15.5"
+                                    style="fill:#ffce56;stroke:#4c241d;stroke-linecap:round;stroke-linejoin:round;stroke-width:2px">
+                                </path>
+                                <path
+                                    d="M40.007,42s0,6,7,8l-3,5h-.862a2.138,2.138,0,0,0-2.138,2.138V59h6l4-10s7-20-7-21"
+                                    style="fill:#ffce56;stroke:#4c241d;stroke-linecap:round;stroke-linejoin:round;stroke-width:2px">
+                                </path>
+                                <path
+                                    d="M20,41V55h-.862A2.138,2.138,0,0,0,17,57.138V59h7l2.5-15.5A14.594,14.594,0,0,0,34,45c5.27-.6,11.532-3.578,15-3a7.966,7.966,0,0,0,6.5,7.5l-1,5.5h-.862A2.138,2.138,0,0,0,51.5,57.138V59h6l2-10.5-1-4s8-16-6-17-17-1-17-1"
+                                    style="fill:#ffce56;stroke:#4c241d;stroke-linecap:round;stroke-linejoin:round;stroke-width:2px">
+                                </path>
+                                <path
+                                    d="M38,15l1.138.853A10.729,10.729,0,0,0,45.578,18H58a5,5,0,0,1,5,5v1a5,5,0,0,1-5,5h-.283"
+                                    style="fill:none;stroke:#4c241d;stroke-linecap:round;stroke-linejoin:round;stroke-width:2px">
+                                </path>
+                                <ellipse cx="35.5" cy="12" rx="2.5" ry="3.703"
+                                    transform="translate(0.223 24.639) rotate(-38.389)"
+                                    style="fill:#bf7e68;stroke:#4c241d;stroke-linecap:round;stroke-linejoin:round;stroke-width:2px">
+                                </ellipse>
+                                <circle cx="11.044" cy="20.014" r="1.069" style="fill:#4c241d"></circle>
+                                <line x1="49" y1="42" x2="49" y2="38"
+                                    style="fill:#ffce56;stroke:#4c241d;stroke-linecap:round;stroke-linejoin:round;stroke-width:2px">
+                                </line>
+                                <line x1="5" y1="59" x2="35" y2="59"
+                                    style="fill:none;stroke:#4c241d;stroke-linecap:round;stroke-linejoin:round;stroke-width:2px">
+                                </line>
+                                <line x1="39" y1="59" x2="62" y2="59"
+                                    style="fill:none;stroke:#4c241d;stroke-linecap:round;stroke-linejoin:round;stroke-width:2px">
+                                </line>
+                                <path
+                                    d="M41,26l-6.74-2.384L29.7,16.324a8.578,8.578,0,0,0-8.089-4c-1.563.147-3.444.361-5.613.671-7,1-7,4-7,4h8.5a1.5,1.5,0,0,1,0,3H16v2l-5,5H5l1,3h4L20,41,31,31l8.4-1.778C40,29,41.888,27.331,41,26Z"
+                                    style="fill:#bf7e68;stroke:#4c241d;stroke-linecap:round;stroke-linejoin:round;stroke-width:2px">
+                                </path>
+                                <polyline points="27 24 27 27 31 31"
+                                    style="fill:#bf7e68;stroke:#4c241d;stroke-linecap:round;stroke-linejoin:round;stroke-width:2px">
+                                </polyline>
+                                <polyline points="20 25 20 30 25.678 35.838"
+                                    style="fill:#bf7e68;stroke:#4c241d;stroke-linecap:round;stroke-linejoin:round;stroke-width:2px">
+                                </polyline>
+                            </g>
+                        </g>
+                    </svg>
                 </div>
                 <div>
                     <h2 class="text-white text-lg font-bold leading-tight tracking-tight">Virtual Zoo ASSAD.</h2>
@@ -221,3 +288,4 @@
 </body>
 
 </html>
+<script src="/ASSAD/assets/js/preloader.js" defer></script>
