@@ -1,3 +1,6 @@
+<?php
+
+?>
 <!DOCTYPE html>
 <html class="dark" lang="en">
 
@@ -11,46 +14,46 @@
         rel="stylesheet" />
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <script id="tailwind-config">
-    tailwind.config = {
-        darkMode: "class",
-        theme: {
-            extend: {
-                colors: {
-                    "primary": "#38e07b",
-                    "background-light": "#f8f7f6",
-                    "background-dark": "#221910",
-                },
-                fontFamily: {
-                    "display": ["Spline Sans", "sans-serif"]
-                },
-                borderRadius: {
-                    "DEFAULT": "1rem",
-                    "lg": "2rem",
-                    "xl": "3rem",
-                    "full": "9999px"
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#38e07b",
+                        "background-light": "#f8f7f6",
+                        "background-dark": "#221910",
+                    },
+                    fontFamily: {
+                        "display": ["Spline Sans", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
                 },
             },
-        },
-    }
+        }
     </script>
     <link rel="stylesheet" href="/ASSAD/assets/css/styles.css">
     <style>
-    ::-webkit-scrollbar {
-        width: 8px;
-    }
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
 
-    ::-webkit-scrollbar-track {
-        background: #122017;
-    }
+        ::-webkit-scrollbar-track {
+            background: #122017;
+        }
 
-    ::-webkit-scrollbar-thumb {
-        background: #29382f;
-        border-radius: 4px;
-    }
+        ::-webkit-scrollbar-thumb {
+            background: #29382f;
+            border-radius: 4px;
+        }
 
-    ::-webkit-scrollbar-thumb:hover {
-        background: #38e07b;
-    }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #38e07b;
+        }
     </style>
 </head>
 
@@ -96,7 +99,7 @@
             <div class="w-full max-w-[440px] z-10">
                 <div class="lg:hidden mb-6 flex justify-center">
                     <div class="flex flex-col items-center gap-1">
-                        <span class="text-primary font-black text-xl tracking-tight">VZ ASSAD</span>
+                        <span class="text-primary font-black text-xl tracking-tight">ASSAD.</span>
                         <span class="text-xs font-medium text-slate-500 dark:text-gray-400 tracking-widest">CAN
                             2025</span>
                     </div>
@@ -110,7 +113,7 @@
                         Log in to access your guided tours and exclusive content.
                     </p>
                 </div>
-                <form class="flex flex-col gap-4">
+                <form class="flex flex-col gap-4" action="./../controllers/login-control.php" method="POST">
                     <div class="flex flex-col gap-1.5">
                         <label class="text-slate-700 dark:text-white text-sm font-medium leading-normal pl-1">Email or
                             Username</label>
@@ -122,7 +125,7 @@
                             </div>
                             <input
                                 class="form-input flex w-full flex-1 bg-transparent border-none focus:ring-0 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-[#b9ab9d] h-full px-2 text-sm font-normal"
-                                placeholder="safari_fan@example.com" value="" />
+                                placeholder="safari_fan@example.com" value="" name="nom" />
                         </div>
                     </div>
                     <div class="flex flex-col gap-1.5">
@@ -138,8 +141,9 @@
                             </div>
                             <input
                                 class="form-input flex w-full flex-1 bg-transparent border-none focus:ring-0 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-[#b9ab9d] h-full px-2 text-sm font-normal"
-                                placeholder="••••••••" type="password" value="" />
+                                placeholder="••••••••" type="password" value="" name="password" />
                             <button
+                                
                                 class="text-slate-400 dark:text-[#b9ab9d] flex items-center justify-center pr-3 hover:text-primary transition-colors cursor-pointer focus:outline-none"
                                 type="button">
                                 <span class="material-symbols-outlined text-[20px]">visibility</span>
@@ -150,11 +154,12 @@
                                 href="#">Forgot Password?</a>
                         </div>
                     </div>
-                    <a href="./roles.php"
-                        class="flex w-full cursor-pointer items-center justify-center overflow-hidden rounded-full h-12 px-5 bg-primary hover:bg-green-600 text-[#181411] text-base font-bold leading-normal tracking-[0.015em] transition-all transform hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-orange-500/20 mt-1">
+                    <button type="submit"
+                        class="flex w-full items-center justify-center overflow-hidden rounded-full h-12 px-5 bg-primary hover:bg-green-600 text-[#181411] text-base font-bold leading-normal tracking-[0.015em] transition-all transform hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-orange-500/20 mt-1">
                         <span class="mr-2">Log In</span>
                         <span class="material-symbols-outlined text-lg">arrow_forward</span>
-                    </a>
+                    </button>
+
                     <div class="relative flex py-2 items-center">
                         <div class="flex-grow border-t border-slate-200 dark:border-[#54473b]"></div>
                         <span class="flex-shrink-0 mx-3 text-slate-400 dark:text-[#b9ab9d] text-xs">Or continue
