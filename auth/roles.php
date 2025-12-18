@@ -1,6 +1,7 @@
 <?php
 include "./../config.php";
 session_start();
+// USER CONNECTED CONDITION
 if (isset($_SESSION['currentuser'])) {
     $user = $_SESSION['currentuser'];
 } else {
