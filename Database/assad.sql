@@ -72,5 +72,6 @@ CREATE TABLE animal(
     paysorigine VARCHAR(50),
     `description` TEXT,
     id_habitat INT,
+    visites INT DEFAULT 0,
     FOREIGN KEY (id_habitat) REFERENCES habitat(id_habitat) ON DELETE CASCADE
 ); 
