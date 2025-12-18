@@ -272,8 +272,8 @@
                         <span class="text-white text-sm font-semibold ml-1">Username</span>
                         <div class="relative">
                             <input
-                                class="w-full bg-surface-dark text-white placeholder-text-muted/50 h-12 rounded-xl border-none focus:ring-2 focus:ring-primary px-4 pl-11 text-sm font-normal transition-all hover:bg-surface-dark/80"
-                                placeholder="SafariExplorer25" type="text" name="nom" required />
+                                class="w-full bg-surface-dark text-white placeholder-text-muted/50 h-12 rounded-xl border-none focus:ring-2 focus:ring-primary px-4 pl-11 text-sm font-normal transition-all hover:bg-surface-dark/80" placeholder="SafariExplorer25"
+                                value="<?= $oldvalues['name'] ?? ''?>" type="text" name="nom" required />
                             <div
                                 class="absolute inset-y-0 left-3.5 flex items-center pointer-events-none text-text-muted group-focus-within:text-primary transition-colors">
                                 <span class="material-symbols-outlined text-[18px]">person</span>
@@ -285,8 +285,8 @@
                         <span class="text-white text-sm font-semibold ml-1">Email Address</span>
                         <div class="relative">
                             <input
-                                class="w-full bg-surface-dark text-white placeholder-text-muted/50 h-12 rounded-xl border-none focus:ring-2 focus:ring-primary px-4 pl-11 text-sm font-normal transition-all hover:bg-surface-dark/80"
-                                placeholder="you@example.com" type="email" name="email" />
+                                class="w-full bg-surface-dark text-white placeholder-text-muted/50 h-12 rounded-xl border-none focus:ring-2 focus:ring-primary px-4 pl-11 text-sm font-normal transition-all hover:bg-surface-dark/80" placeholder="you@example.com"
+                                value="<?= $oldvalues['email'] ?? ''?>" type="email" name="email" />
                             <div
                                 class="absolute inset-y-0 left-3.5 flex items-center pointer-events-none text-text-muted group-focus-within:text-primary transition-colors">
                                 <span class="material-symbols-outlined text-[18px]">mail</span>
@@ -299,6 +299,7 @@
                             <span class="text-white text-sm font-semibold ml-1">Password</span>
                             <div class="relative">
                                 <input
+                                    id="password"
                                     class="w-full bg-surface-dark text-white placeholder-text-muted/50 h-12 rounded-xl border-none focus:ring-2 focus:ring-primary px-4 pl-11 text-sm font-normal transition-all hover:bg-surface-dark/80"
                                     placeholder="••••••••" type="password" name="password" />
                                 <div
@@ -311,6 +312,7 @@
                             <span class="text-white text-sm font-semibold ml-1">Confirm</span>
                             <div class="relative">
                                 <input
+                                    id="confirmPassword"
                                     class="w-full bg-surface-dark text-white placeholder-text-muted/50 h-12 rounded-xl border-none focus:ring-2 focus:ring-primary px-4 pl-11 text-sm font-normal transition-all hover:bg-surface-dark/80"
                                     placeholder="••••••••" type="password" />
                                 <div
@@ -319,12 +321,13 @@
                                 </div>
                             </div>
                         </label>
+                        <p id="matchingmessage" class="text-red-500 text-xs"></p>
                     </div>
-                        <p class="text-red-500 text-xs"><?= $errors['password'] ?? '' ?></p>
+                    <p class="text-red-500 text-xs"><?= $errors['password'] ?? '' ?></p>
                     <label class="flex items-start gap-2.5 px-1 mt-1 cursor-pointer group">
                         <input
                             class="mt-0.5 rounded border-surface-dark bg-surface-dark text-primary focus:ring-primary focus:ring-offset-background-dark"
-                            type="checkbox" />
+                            type="checkbox" required/>
                         <span class="text-xs text-text-muted leading-snug group-hover:text-white transition-colors">
                             I agree to the <a class="text-primary hover:underline" href="#">Terms of Service</a> and <a
                                 class="text-primary hover:underline" href="#">Privacy Policy</a> for CAN 2025 events.
@@ -360,4 +363,5 @@
 </body>
 
 </html>
+<script src="/ASSAD/assets/js/script.js"></script>
 <script src="/ASSAD/assets/js/preloader.js" defer></script>
