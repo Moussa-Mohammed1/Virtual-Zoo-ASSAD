@@ -15,39 +15,44 @@
         href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
         rel="stylesheet" />
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link rel="stylesheet" href="/ASSAD/assets/css/styles.css">
     <script id="tailwind-config">
-    tailwind.config = {
-        darkMode: "class",
-        theme: {
-            extend: {
-                colors: {
-                    "primary": "#36e278",
-                    "background-light": "#f6f8f7",
-                    "background-dark": "#112117",
-                    "surface-dark": "#1c3024",
-                    "border-dark": "#29382f",
-                    "text-secondary": "#9eb7a8"
-                },
-                fontFamily: {
-                    "display": ["Inter", "Noto Sans", "sans-serif"],
-                    "body": ["Inter", "Noto Sans", "sans-serif"]
-                },
-                borderRadius: {
-                    "DEFAULT": "0.25rem",
-                    "lg": "0.5rem",
-                    "xl": "0.75rem",
-                    "full": "9999px"
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#36e278",
+                        "background-light": "#f6f8f7",
+                        "background-dark": "#112117",
+                        "surface-dark": "#1c3024",
+                        "border-dark": "#29382f",
+                        "text-secondary": "#9eb7a8"
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "Noto Sans", "sans-serif"],
+                        "body": ["Inter", "Noto Sans", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
                 },
             },
-        },
-    }
+        }
     </script>
 </head>
 
 <body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-white font-display antialiased">
+    <div id="loader">
+        <div class="spinner" aria-hidden="true"></div>
+        <div class="text-sm text-white mt-2">Loading...</div>
+    </div>
     <div class="relative flex h-auto min-h-screen w-full flex-col overflow-x-hidden">
         <header
-            class="flex items-center justify-center lg:justify-start whitespace-nowrap border-b border-solid border-b-border-dark bg-background-dark px-6 py-4 lg:px-10">
+            class="flex items-center justify-between whitespace-nowrap border-b border-solid border-b-border-dark bg-background-dark px-6 py-4 lg:px-10">
             <div class="flex items-center gap-4 text-white">
                 <div class="size-8 text-primary">
                     <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" fill="#000000"
@@ -114,10 +119,19 @@
                         </g>
                     </svg>
                 </div>
-                <h2 class="text-white text-lg font-bold leading-tight tracking-[-0.015em]">Virtual Zoo ASSAD <span
-                        class="font-normal text-text-secondary">| CAN 2025</span></h2>
+                <h2 class="text-white text-lg font-bold leading-tight tracking-[-0.015em]">
+                    Virtual Zoo ASSAD <span class="font-normal text-text-secondary">| CAN 2025</span>
+                </h2>
             </div>
+            <a href="./../logout.php" class="text-white hover:text-red-500 transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h6a2 2 0 012 2v1" />
+                </svg>
+            </a>
         </header>
+
         <div class="layout-container flex h-full grow flex-col">
             <div class="px-4 md:px-40 flex flex-1 justify-center py-10">
                 <div class="layout-content-container flex flex-col max-w-[640px] flex-1 gap-8">
@@ -245,3 +259,4 @@
 </body>
 
 </html>
+<script src="/ASSAD/assets/js/preloader.js" defer></script>
