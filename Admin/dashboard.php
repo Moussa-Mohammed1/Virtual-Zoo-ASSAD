@@ -4,6 +4,65 @@
     $logged = $_SESSION['loggeduser'] ?? '';
 
     if(!$logged || $logged['role'] != 'Admin'){header('Location: ./../auth/login.php');exit();}
+
+    // store habitats
+    $habitats = [];
+    $stmt_habitat = $conn->prepare("SELECT * FROM habitat");
+    $stmt_habitat->execute();
+    $results_habitat = $stmt_habitat->get_result();
+
+    if ($results_habitat->num_rows > 0) {
+        while ($row = $results_habitat->fetch_assoc()) {
+            $habitats[$row['id_habitat']] = $row;
+        }
+    }
+
+    // store habitats
+    $animals = [];
+    $stmt_animal = $conn->prepare("SELECT a.*, h.nom FROM animal a LEFT JOIN habitat h ON a.id_habitat = h.id_habitat");
+    $stmt_animal->execute();
+    $result_animal = $stmt_animal->get_result();
+
+    if ($result_animal->num_rows > 0) {
+        while ($row = $result_animal->fetch_assoc()) {
+            $animals[] = $row;
+        }
+    }
+
+    // users statistics
+    $statement = $conn->prepare('SELECT * FROM utilisateur');
+    $statement->execute();
+    $result = $statement->get_result();
+    $visitors = [];
+    $guides = [];
+    $pending = [];
+    if ($result->num_rows > 0) {
+        while ($row = $result->fetch_assoc()) {
+            if ($row['role'] == 'visiteur') {
+                $visitors[] = $row;
+            }
+            if ($row['approved'] == '0') {
+                $pending[] = $row;
+            }
+            if ($row['role'] == 'guide') {
+                $guides[] = $row;
+            }
+        }
+    }
+
+    // visites statistic
+
+    $active_v = [];
+    $stmt_visite = $conn->prepare("SELECT * FROM visitesguidees");
+    $stmt_visite->execute();
+    $resuts_visite = $stmt_visite->get_result();
+    if ($resuts_visite->num_rows > 0) {
+        while ($row = $$resuts_visite->fetch_assoc()) {
+            if ($row['status'] == 'ACTIVE') {
+                $active_v[] = $row;
+            }
+        }
+    }
     
 ?>
 
@@ -190,7 +249,7 @@
                     style='background-image: url("https://avatars.githubusercontent.com/u/209652052?v=4");'>
                 </div>
                 <div class="flex flex-col">
-                    <p class="text-white text-xs font-bold">Admin User</p>
+                    <p class="text-white text-xs font-bold"><?=$logged['nom']?></p>
                     <p class="text-[#9db9a6] text-[10px]"><?= $logged['nom']?>@assad.zoo</p>
                 </div>
             </div>
@@ -217,24 +276,13 @@
                         class="block w-full pl-10 pr-3 py-2 border-none rounded-lg leading-5 bg-surface-dark text-white placeholder-[#9db9a6] focus:outline-none focus:ring-1 focus:ring-primary sm:text-sm transition-all"
                         placeholder="Search animals, users, tours..." type="text" />
                 </div>
-                <div class="flex gap-2">
-                    <button
-                        class="flex items-center justify-center h-10 w-10 rounded-lg bg-surface-dark text-white hover:bg-primary hover:text-black transition-colors relative">
-                        <span class="material-symbols-outlined text-[20px]">notifications</span>
-                        <span
-                            class="absolute top-2 right-2 h-2 w-2 rounded-full bg-red-500 border border-surface-dark"></span>
-                    </button>
-                    <button
-                        class="flex items-center justify-center h-10 w-10 rounded-lg bg-surface-dark text-white hover:bg-primary hover:text-black transition-colors">
-                        <span class="material-symbols-outlined text-[20px]">add_circle</span>
-                    </button>
-                </div>
+                
             </div>
         </header>
         <div class="flex-1 overflow-y-auto p-4 md:p-8 scroll-smooth">
             <div class="max-w-7xl mx-auto flex flex-col gap-8">
                 <div>
-                    <h2 class="text-white text-2xl font-bold">Welcome back, Admin 👋</h2>
+                    <h2 class="text-white text-2xl font-bold">Welcome back, <?= $logged['nom']?> 👋</h2>
                     <p class="text-[#9db9a6] mt-1">Here is what is happening with CAN 2025 Virtual Zoo today.</p>
                 </div>
                 <script src="/ASSAD/assets/js/preloader.js" defer></script>
@@ -249,7 +297,7 @@
                                 class="text-[#0bda43] text-xs font-bold bg-[#0bda43]/10 px-2 py-1 rounded-full">+12%</span>
                         </div>
                         <p class="text-[#9db9a6] text-sm font-medium">Total Visitors</p>
-                        <p class="text-white text-3xl font-bold mt-1">24,593</p>
+                        <p class="text-white text-3xl font-bold mt-1"><?=count($visitors)?></p>
                     </div>
                     <div
                         class="flex flex-col p-5 bg-surface-dark rounded-xl border border-white/5 hover:border-primary/30 transition-colors shadow-sm">
@@ -261,7 +309,7 @@
                                 class="text-[#0bda43] text-xs font-bold bg-[#0bda43]/10 px-2 py-1 rounded-full">+2%</span>
                         </div>
                         <p class="text-[#9db9a6] text-sm font-medium">Total Animals</p>
-                        <p class="text-white text-3xl font-bold mt-1">85</p>
+                        <p class="text-white text-3xl font-bold mt-1"><?=count($animals)?></p>
                     </div>
                     <div
                         class="flex flex-col p-5 bg-surface-dark rounded-xl border border-white/5 hover:border-primary/30 transition-colors shadow-sm">
@@ -274,7 +322,7 @@
                                 Req.</span>
                         </div>
                         <p class="text-[#9db9a6] text-sm font-medium">Pending Approvals</p>
-                        <p class="text-white text-3xl font-bold mt-1">14</p>
+                        <p class="text-white text-3xl font-bold mt-1"><?=count($pending)?></p>
                     </div>
                     <div
                         class="flex flex-col p-5 bg-surface-dark rounded-xl border border-white/5 hover:border-primary/30 transition-colors shadow-sm">
@@ -286,7 +334,7 @@
                                 class="text-[#9db9a6] text-xs font-bold bg-white/5 px-2 py-1 rounded-full">Stable</span>
                         </div>
                         <p class="text-[#9db9a6] text-sm font-medium">Active Tours</p>
-                        <p class="text-white text-3xl font-bold mt-1">6</p>
+                        <p class="text-white text-3xl font-bold mt-1"><?= count($active_v)?></p>
                     </div>
                 </div>
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">

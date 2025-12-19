@@ -1,5 +1,7 @@
 <?php
-
+    session_start();
+    unset($_SESSION['loggeduser']);
+    session_destroy();
 ?>
 <!DOCTYPE html>
 <html class="dark" lang="en">
