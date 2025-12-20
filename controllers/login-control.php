@@ -29,6 +29,10 @@ if ($result->num_rows > 0) {
 }
 if ($loggeduser) {
     $_SESSION['loggeduser'] = $loggeduser;
+    if ($loggeduser['role'] === 'NOTAPPROVED') {
+        header('Location: ./../auth/unapproved.php');
+        exit();
+    }
 
     if (!$loggeduser['approved']) {
         header('Location: ./../auth/approval.php');
@@ -39,7 +43,7 @@ if ($loggeduser) {
         case 'admin':
             header('Location: ./../Admin/dashboard.php');
             break;
-        case 'visiteur':
+        case 'Visitor':
             header('Location: ./../Visitor/visitor.php');
             break;
         case 'guide':
