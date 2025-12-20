@@ -270,7 +270,7 @@ if ($result->num_rows > 0) {
                                         <?php
                                         $new = 0;
                                         foreach ($users as $user) {
-                                            if ($user['approved'] == 0 && !$user['role'] == 'NOTAPPROVED') {
+                                            if ($user['approved'] == 0 && $user['role'] !== 'NOTAPPROVED') {
                                                 $new++;
                                             }
                                         }
@@ -308,7 +308,7 @@ if ($result->num_rows > 0) {
                             <tbody class="divide-y divide-white/5">
                                 <?php if ($new != 0): ?>
                                     <?php foreach ($users as $user): ?>
-                                        <?php if ($user['approved'] == 0 && !$user['role'] == 'NOTAPPROVED'): ?>
+                                        <?php if ($user['approved'] == 0 && $user['role'] !== 'NOTAPPROVED'): ?>
                                             <tr class="group hover:bg-white/5 transition-colors">
                                                 <td class="px-6 py-4">
                                                     <div class="flex items-center gap-3">
@@ -346,7 +346,7 @@ if ($result->num_rows > 0) {
                                         <?php endif; ?>
                                     <?php endforeach; ?>
                                 <?php else: ?>
-                                    <p class="px-6 py-4 text-[#9db9a6] text-lg text-center">No new registrations!</p>
+                                    <td class="px-6 py-4 text-[#9db9a6] text-lg text-center">No new registrations!</td>
                                 <?php endif; ?>
                             </tbody>
                         </table>
