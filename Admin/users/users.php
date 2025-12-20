@@ -1,5 +1,22 @@
 <?php
-    include ""
+include "./../../config.php";
+session_start();
+$logged = $_SESSION['loggeduser'];
+
+if (!$logged) {
+    header('Location: ./../../auth/login.php');
+    exit();
+}
+
+$users = [];
+$stmt_users = $conn->prepare("SELECT * FROM utilisateur");
+$stmt_users->execute();
+$result = $stmt_users->get_result();
+if ($result->num_rows > 0) {
+    while ($row = $result->fetch_assoc()) {
+        $users[] = $row;
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -175,16 +192,28 @@
         </nav>
         <div class="p-4 border-t border-[#28392e]">
             <div
-                class="flex items-center gap-3 p-2 rounded-lg bg-surface-dark/50 hover:bg-surface-dark cursor-pointer transition-colors">
+                class="flex items-center gap-3 p-2 rounded-lg bg-surface-dark/50 hover:bg-surface-dark transition-colors group">
                 <div class="bg-center bg-no-repeat bg-cover rounded-full h-8 w-8"
                     data-alt="Profile picture of the admin user"
                     style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBKhw_hzdz9yoEDpYxdcLkdxEJGsxOm2FEwVJBj3LZ3rAHeY5Na3uNzpt1VCN2GyQBN348ClzgctgUQ-LE70ebh8ZQjAs_HoEo4FEtphuLmCmkcA7JesvqP3r1jVV8GeyA6okkfHYepeQfbA3Qe6m1IugrAfH6-vtFQ5mzPs2dXMklDDx-_iH6M7itv4BWiqejYaxS0OoH6qe4wrtIZbPEFPc_0t1T2Fv4JSw6cTlz5IFbJFjUnOp6NnfYaWOHEe-Gw5oGwkgUV-RUO");'>
                     <script src="/ASSAD/assets/js/preloader.js" defer></script>
                 </div>
-                <div class="flex flex-col">
-                    <p class="text-white text-xs font-bold">Admin User</p>
-                    <p class="text-[#9db9a6] text-[10px]">admin@assad.zoo</p>
+                <div class="flex flex-col flex-1 min-w-0">
+                    <p class="text-white text-xs font-bold truncate"><?= $logged['nom'] ?></p>
+                    <p class="text-[#9db9a6] text-[10px] truncate"><?= $logged['email'] ?></p>
                 </div>
+                <a href="/ASSAD/logout.php">
+                    <button
+                        class="p-1.5 rounded-md text-[#9db9a6] hover:text-red-400 hover:bg-red-400/10 transition-all"
+                        title="Logout">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                            <polyline points="16 17 21 12 16 7"></polyline>
+                            <line x1="21" y1="12" x2="9" y2="12"></line>
+                        </svg>
+                    </button>
+                </a>
             </div>
         </div>
     </aside>
@@ -209,7 +238,7 @@
                         class="block w-full pl-10 pr-3 py-2 border-none rounded-lg leading-5 bg-surface-dark text-white placeholder-[#9db9a6] focus:outline-none focus:ring-1 focus:ring-primary sm:text-sm transition-all"
                         placeholder="Quick search..." type="text" />
                 </div>
-                <div class="flex gap-2">
+                <!-- <div class="flex gap-2">
                     <button
                         class="flex items-center justify-center h-10 w-10 rounded-lg bg-surface-dark text-white hover:bg-primary hover:text-black transition-colors relative">
                         <span class="material-symbols-outlined text-[20px]">notifications</span>
@@ -220,7 +249,7 @@
                         class="flex items-center justify-center h-10 w-10 rounded-lg bg-surface-dark text-white hover:bg-primary hover:text-black transition-colors">
                         <span class="material-symbols-outlined text-[20px]">person_add</span>
                     </button>
-                </div>
+                </div> -->
             </div>
         </header>
         <div class="flex-1 overflow-y-auto p-4 md:p-8 scroll-smooth">
@@ -237,14 +266,24 @@
                                 <h3 class="text-white text-lg font-bold flex items-center gap-2">
                                     Pending Registrations
                                     <span
-                                        class="bg-yellow-500 text-black text-[10px] px-2 py-0.5 rounded-full font-bold">3
-                                        New</span>
+                                        class="bg-yellow-500 text-black text-[10px] px-2 py-0.5 rounded-full font-bold">
+                                        <?php
+                                        $new = 0;
+                                        foreach ($users as $user) {
+                                            if ($user['approved'] == 0 && !$user['role'] == 'NOTAPPROVED') {
+                                                $new++;
+                                            }
+                                        }
+                                        echo $new;
+                                        ?>
+                                        new</span>
                                 </h3>
-                                <p class="text-[#9db9a6] text-sm mt-1">Review and approve new visitor accounts requests.
+                                <p class="text-[#9db9a6] text-sm mt-1">Review and approve new registrations accounts
+                                    requests.
                                 </p>
                             </div>
                         </div>
-                        <div class="flex gap-2">
+                        <!-- <div class="flex gap-2">
                             <button
                                 class="px-4 py-2 text-sm font-medium text-[#9db9a6] hover:text-white transition-colors">Dismiss
                                 All</button>
@@ -253,119 +292,62 @@
                                 <span class="material-symbols-outlined text-[18px]">check_circle</span>
                                 Approve All
                             </button>
-                        </div>
+                        </div> -->
                     </div>
                     <div class="overflow-x-auto">
                         <table class="w-full text-left border-collapse">
                             <thead class="bg-black/20 text-[#9db9a6] text-xs uppercase font-medium">
                                 <tr>
                                     <th class="px-6 py-4">Applicant</th>
+                                    <th class="px-6 py-4">Email</th>
                                     <th class="px-6 py-4">Role Requested</th>
-                                    <th class="px-6 py-4">Location</th>
-                                    <th class="px-6 py-4">Date</th>
-                                    <th class="px-6 py-4 text-right">Actions</th>
+                                    <th class="px-6 py-4 text-center">Actions</th>
+
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-white/5">
-                                <tr class="group hover:bg-white/5 transition-colors">
-                                    <td class="px-6 py-4">
-                                        <div class="flex items-center gap-3">
-                                            <div
-                                                class="h-9 w-9 rounded-full bg-surface-dark border border-white/10 flex items-center justify-center text-white font-bold text-xs shadow-sm">
-                                                JD</div>
-                                            <div>
-                                                <p class="text-white text-sm font-medium">Jean Dubois</p>
-                                                <p class="text-[#9db9a6] text-xs">jean.d@example.com</p>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td class="px-6 py-4">
-                                        <span
-                                            class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-blue-500/10 text-blue-400 border border-blue-500/20">
-                                            Supporter
-                                        </span>
-                                    </td>
-                                    <td class="px-6 py-4 text-[#9db9a6] text-sm">Abidjan, Ivory Coast</td>
-                                    <td class="px-6 py-4 text-[#9db9a6] text-sm">Oct 24, 2024</td>
-                                    <td class="px-6 py-4 text-right">
-                                        <div class="flex justify-end gap-2">
-                                            <button
-                                                class="h-8 px-3 rounded-lg border border-red-500/30 text-red-500 hover:bg-red-500 hover:text-white transition-colors text-xs font-medium flex items-center gap-1">
-                                                Reject
-                                            </button>
-                                            <button
-                                                class="h-8 px-3 rounded-lg bg-primary text-black hover:bg-white transition-colors text-xs font-bold flex items-center gap-1 shadow-lg shadow-primary/20">
-                                                Approve
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr class="group hover:bg-white/5 transition-colors">
-                                    <td class="px-6 py-4">
-                                        <div class="flex items-center gap-3">
-                                            <div
-                                                class="h-9 w-9 rounded-full bg-gradient-to-br from-purple-600 to-indigo-600 flex items-center justify-center text-white font-bold text-xs shadow-sm">
-                                                AM</div>
-                                            <div>
-                                                <p class="text-white text-sm font-medium">Aminata Mbaye</p>
-                                                <p class="text-[#9db9a6] text-xs">aminata.m@example.com</p>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td class="px-6 py-4">
-                                        <span
-                                            class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-purple-500/10 text-purple-400 border border-purple-500/20">
-                                            Family Plan
-                                        </span>
-                                    </td>
-                                    <td class="px-6 py-4 text-[#9db9a6] text-sm">Dakar, Senegal</td>
-                                    <td class="px-6 py-4 text-[#9db9a6] text-sm">Oct 23, 2024</td>
-                                    <td class="px-6 py-4 text-right">
-                                        <div class="flex justify-end gap-2">
-                                            <button
-                                                class="h-8 px-3 rounded-lg border border-red-500/30 text-red-500 hover:bg-red-500 hover:text-white transition-colors text-xs font-medium flex items-center gap-1">
-                                                Reject
-                                            </button>
-                                            <button
-                                                class="h-8 px-3 rounded-lg bg-primary text-black hover:bg-white transition-colors text-xs font-bold flex items-center gap-1 shadow-lg shadow-primary/20">
-                                                Approve
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr class="group hover:bg-white/5 transition-colors">
-                                    <td class="px-6 py-4">
-                                        <div class="flex items-center gap-3">
-                                            <div
-                                                class="h-9 w-9 rounded-full bg-gradient-to-br from-emerald-600 to-teal-600 flex items-center justify-center text-white font-bold text-xs shadow-sm">
-                                                KO</div>
-                                            <div>
-                                                <p class="text-white text-sm font-medium">Kofi Osei</p>
-                                                <p class="text-[#9db9a6] text-xs">k.osei@example.com</p>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td class="px-6 py-4">
-                                        <span
-                                            class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-white/5 text-[#9db9a6] border border-white/10">
-                                            Visitor
-                                        </span>
-                                    </td>
-                                    <td class="px-6 py-4 text-[#9db9a6] text-sm">Accra, Ghana</td>
-                                    <td class="px-6 py-4 text-[#9db9a6] text-sm">Oct 23, 2024</td>
-                                    <td class="px-6 py-4 text-right">
-                                        <div class="flex justify-end gap-2">
-                                            <button
-                                                class="h-8 px-3 rounded-lg border border-red-500/30 text-red-500 hover:bg-red-500 hover:text-white transition-colors text-xs font-medium flex items-center gap-1">
-                                                Reject
-                                            </button>
-                                            <button
-                                                class="h-8 px-3 rounded-lg bg-primary text-black hover:bg-white transition-colors text-xs font-bold flex items-center gap-1 shadow-lg shadow-primary/20">
-                                                Approve
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
+                                <?php if ($new != 0): ?>
+                                    <?php foreach ($users as $user): ?>
+                                        <?php if ($user['approved'] == 0 && !$user['role'] == 'NOTAPPROVED'): ?>
+                                            <tr class="group hover:bg-white/5 transition-colors">
+                                                <td class="px-6 py-4">
+                                                    <div class="flex items-center gap-3">
+                                                        <div
+                                                            class="h-9 w-9 rounded-full bg-surface-dark border border-white/10 flex items-center justify-center text-white font-bold text-xs shadow-sm">
+                                                            <?= $user['nom'][0] . strtoupper($user['nom'][1]) ?>
+                                                        </div>
+                                                        <div>
+                                                            <p class="text-white text-sm font-medium"><?= $user['nom'] ?></p>
+                                                        </div>
+                                                    </div>
+                                                </td>
+
+                                                <td class="px-6 py-4 text-[#9db9a6] text-sm"><?= $user['email'] ?></td>
+                                                <td class="px-6 py-4">
+                                                    <span
+                                                        class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium <?= $user['role'] == 'Visitor' ? 'bg-white/5 text-[#9db9a6] border border-white/10' : 'bg-purple-500/10 text-purple-400 border border-purple-500/20' ?>">
+                                                        <?= $user['role'] ?>
+                                                    </span>
+                                                </td>
+
+                                                <td class="px-6 py-4 text-right">
+                                                    <div class="flex justify-end gap-2">
+                                                        <a href="./approve.php?id=<?= $user['id_user'] ?>&action=reject"
+                                                            class="h-8 px-3 rounded-lg border border-red-500/30 text-red-500 hover:bg-red-500 hover:text-white transition-colors text-xs font-medium flex items-center gap-1">
+                                                            Reject
+                                                        </a>
+                                                        <a href="./approve.php?id=<?= $user['id_user'] ?>&action=approve"
+                                                            class="h-8 px-3 rounded-lg bg-primary text-black hover:bg-white transition-colors text-xs font-bold flex items-center gap-1 shadow-lg shadow-primary/20">
+                                                            Approve
+                                                        </a>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        <?php endif; ?>
+                                    <?php endforeach; ?>
+                                <?php else: ?>
+                                    <p class="px-6 py-4 text-[#9db9a6] text-lg text-center">No new registrations!</p>
+                                <?php endif; ?>
                             </tbody>
                         </table>
                     </div>
@@ -373,314 +355,101 @@
                 <div class="flex flex-col gap-4">
                     <div class="flex flex-col sm:flex-row justify-between items-end sm:items-center gap-4">
                         <h3 class="text-white text-xl font-bold">Registered Users <span
-                                class="text-[#9db9a6] text-sm font-normal ml-2">Total: 24,593</span></h3>
-                        <div class="flex flex-wrap items-center gap-3 w-full sm:w-auto">
-                            <div class="relative flex-grow sm:flex-grow-0 sm:w-64">
-                                <span
-                                    class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-[#9db9a6]">
-                                    <span class="material-symbols-outlined text-[18px]">search</span>
-                                </span>
-                                <input
-                                    class="w-full bg-surface-dark border border-white/10 text-white text-sm rounded-lg block pl-10 p-2.5 focus:ring-primary focus:border-primary placeholder-[#5a6b60]"
-                                    placeholder="Search name, email..." type="text" />
-                            </div>
-                            <select
-                                class="bg-surface-dark border border-white/10 text-white text-sm rounded-lg focus:ring-primary focus:border-primary block p-2.5 min-w-[120px]">
-                                <option selected="">Status: All</option>
-                                <option value="active">Active</option>
-                                <option value="inactive">Inactive</option>
-                                <option value="suspended">Suspended</option>
-                            </select>
-                            <select
-                                class="bg-surface-dark border border-white/10 text-white text-sm rounded-lg focus:ring-primary focus:border-primary block p-2.5 min-w-[120px]">
-                                <option selected="">Role: All</option>
-                                <option value="admin">Admin</option>
-                                <option value="supporter">Supporter</option>
-                                <option value="family">Family</option>
-                                <option value="visitor">Visitor</option>
-                            </select>
-                            <button
-                                class="p-2.5 text-[#9db9a6] bg-surface-dark border border-white/10 rounded-lg hover:text-white hover:border-white/30 transition-colors"
-                                title="Sort Order">
-                                <span class="material-symbols-outlined text-[20px]">sort</span>
-                            </button>
-                        </div>
+                                class="text-[#9db9a6] text-sm font-normal ml-2">Total: <?php
+                                $registers_count = 0;
+                                foreach ($users as $user) {
+                                    if ($user['approved'] == 1) {
+                                        $registers_count++;
+                                    }
+                                }
+                                echo $registers_count;
+                                ?></span></h3>
                     </div>
                     <div class="bg-surface-dark rounded-xl border border-white/5 overflow-hidden">
                         <div class="overflow-x-auto">
                             <table class="w-full text-left border-collapse">
                                 <thead class="bg-black/20 text-[#9db9a6] text-xs uppercase font-medium">
                                     <tr>
-                                        <th class="px-6 py-4 w-12">
-                                            <input
-                                                class="w-4 h-4 text-primary bg-surface-dark border-white/20 rounded focus:ring-primary focus:ring-2 focus:ring-offset-background-dark"
-                                                type="checkbox" />
-                                        </th>
                                         <th class="px-6 py-4">User Details</th>
                                         <th class="px-6 py-4">Role</th>
                                         <th class="px-6 py-4">Status</th>
-                                        <th class="px-6 py-4">Joined Date</th>
                                         <th class="px-6 py-4 text-right">Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody class="divide-y divide-white/5">
-                                    <tr class="group hover:bg-white/5 transition-colors">
-                                        <td class="px-6 py-4">
-                                            <input
-                                                class="w-4 h-4 text-primary bg-surface-dark border-white/20 rounded focus:ring-primary focus:ring-2 focus:ring-offset-background-dark"
-                                                type="checkbox" />
-                                        </td>
-                                        <td class="px-6 py-4">
-                                            <div class="flex items-center gap-3">
-                                                <div class="h-10 w-10 rounded-full bg-cover bg-center"
-                                                    style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBKhw_hzdz9yoEDpYxdcLkdxEJGsxOm2FEwVJBj3LZ3rAHeY5Na3uNzpt1VCN2GyQBN348ClzgctgUQ-LE70ebh8ZQjAs_HoEo4FEtphuLmCmkcA7JesvqP3r1jVV8GeyA6okkfHYepeQfbA3Qe6m1IugrAfH6-vtFQ5mzPs2dXMklDDx-_iH6M7itv4BWiqejYaxS0OoH6qe4wrtIZbPEFPc_0t1T2Fv4JSw6cTlz5IFbJFjUnOp6NnfYaWOHEe-Gw5oGwkgUV-RUO");'>
-                                                </div>
-                                                <div>
-                                                    <p class="text-white text-sm font-medium">Sarah Connor</p>
-                                                    <p class="text-[#9db9a6] text-xs">sarah.c@sky.net</p>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td class="px-6 py-4">
-                                            <div class="flex items-center gap-2">
-                                                <span
-                                                    class="material-symbols-outlined text-purple-400 text-[18px]">verified_user</span>
-                                                <span class="text-white text-sm">Administrator</span>
-                                            </div>
-                                        </td>
-                                        <td class="px-6 py-4">
-                                            <span
-                                                class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-[#0bda43]/10 text-[#0bda43] border border-[#0bda43]/20">
-                                                <span class="h-1.5 w-1.5 rounded-full bg-[#0bda43]"></span>
-                                                Active
-                                            </span>
-                                        </td>
-                                        <td class="px-6 py-4 text-[#9db9a6] text-sm">Jan 12, 2024</td>
-                                        <td class="px-6 py-4 text-right">
-                                            <div class="flex justify-end items-center gap-2">
-                                                <button
-                                                    class="p-2 rounded-lg text-[#9db9a6] hover:bg-white/10 hover:text-white transition-colors"
-                                                    title="Edit User">
-                                                    <span class="material-symbols-outlined text-[20px]">edit</span>
-                                                </button>
-                                                <div class="h-4 w-[1px] bg-white/10"></div>
-                                                <button
-                                                    class="p-2 rounded-lg text-red-400 hover:bg-red-500/10 hover:text-red-500 transition-colors"
-                                                    title="Deactivate Account">
-                                                    <span class="material-symbols-outlined text-[20px]">block</span>
-                                                </button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr class="group hover:bg-white/5 transition-colors">
-                                        <td class="px-6 py-4">
-                                            <input
-                                                class="w-4 h-4 text-primary bg-surface-dark border-white/20 rounded focus:ring-primary focus:ring-2 focus:ring-offset-background-dark"
-                                                type="checkbox" />
-                                        </td>
-                                        <td class="px-6 py-4">
-                                            <div class="flex items-center gap-3">
-                                                <div
-                                                    class="h-10 w-10 rounded-full bg-gradient-to-tr from-blue-500 to-cyan-500 flex items-center justify-center text-white font-bold">
-                                                    MK</div>
-                                                <div>
-                                                    <p class="text-white text-sm font-medium">Moussa Koné</p>
-                                                    <p class="text-[#9db9a6] text-xs">moussa.kone@example.ci</p>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td class="px-6 py-4">
-                                            <div class="flex items-center gap-2">
-                                                <span
-                                                    class="material-symbols-outlined text-blue-400 text-[18px]">volunteer_activism</span>
-                                                <span class="text-white text-sm">Supporter</span>
-                                            </div>
-                                        </td>
-                                        <td class="px-6 py-4">
-                                            <span
-                                                class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-[#0bda43]/10 text-[#0bda43] border border-[#0bda43]/20">
-                                                <span class="h-1.5 w-1.5 rounded-full bg-[#0bda43]"></span>
-                                                Active
-                                            </span>
-                                        </td>
-                                        <td class="px-6 py-4 text-[#9db9a6] text-sm">Sep 05, 2024</td>
-                                        <td class="px-6 py-4 text-right">
-                                            <div class="flex justify-end items-center gap-2">
-                                                <button
-                                                    class="p-2 rounded-lg text-[#9db9a6] hover:bg-white/10 hover:text-white transition-colors"
-                                                    title="Edit User">
-                                                    <span class="material-symbols-outlined text-[20px]">edit</span>
-                                                </button>
-                                                <div class="h-4 w-[1px] bg-white/10"></div>
-                                                <button
-                                                    class="p-2 rounded-lg text-red-400 hover:bg-red-500/10 hover:text-red-500 transition-colors"
-                                                    title="Deactivate Account">
-                                                    <span class="material-symbols-outlined text-[20px]">block</span>
-                                                </button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr class="group hover:bg-white/5 transition-colors">
-                                        <td class="px-6 py-4">
-                                            <input
-                                                class="w-4 h-4 text-primary bg-surface-dark border-white/20 rounded focus:ring-primary focus:ring-2 focus:ring-offset-background-dark"
-                                                type="checkbox" />
-                                        </td>
-                                        <td class="px-6 py-4">
-                                            <div class="flex items-center gap-3">
-                                                <div
-                                                    class="h-10 w-10 rounded-full bg-gradient-to-tr from-gray-600 to-slate-600 flex items-center justify-center text-white font-bold">
-                                                    AL</div>
-                                                <div>
-                                                    <p class="text-white text-sm font-medium">Alice Lee</p>
-                                                    <p class="text-[#9db9a6] text-xs">alice.l@travel.com</p>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td class="px-6 py-4">
-                                            <div class="flex items-center gap-2">
-                                                <span
-                                                    class="material-symbols-outlined text-[#9db9a6] text-[18px]">person</span>
-                                                <span class="text-white text-sm">Visitor</span>
-                                            </div>
-                                        </td>
-                                        <td class="px-6 py-4">
-                                            <span
-                                                class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-white/5 text-[#9db9a6] border border-white/10">
-                                                <span class="h-1.5 w-1.5 rounded-full bg-[#9db9a6]"></span>
-                                                Inactive
-                                            </span>
-                                        </td>
-                                        <td class="px-6 py-4 text-[#9db9a6] text-sm">Aug 20, 2024</td>
-                                        <td class="px-6 py-4 text-right">
-                                            <div class="flex justify-end items-center gap-2">
-                                                <button
-                                                    class="p-2 rounded-lg text-[#9db9a6] hover:bg-white/10 hover:text-white transition-colors"
-                                                    title="Edit User">
-                                                    <span class="material-symbols-outlined text-[20px]">edit</span>
-                                                </button>
-                                                <div class="h-4 w-[1px] bg-white/10"></div>
-                                                <button
-                                                    class="p-2 rounded-lg text-primary hover:bg-primary/10 hover:text-primary transition-colors"
-                                                    title="Activate Account">
-                                                    <span
-                                                        class="material-symbols-outlined text-[20px]">power_settings_new</span>
-                                                </button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr class="group hover:bg-white/5 transition-colors">
-                                        <td class="px-6 py-4">
-                                            <input
-                                                class="w-4 h-4 text-primary bg-surface-dark border-white/20 rounded focus:ring-primary focus:ring-2 focus:ring-offset-background-dark"
-                                                type="checkbox" />
-                                        </td>
-                                        <td class="px-6 py-4">
-                                            <div class="flex items-center gap-3">
-                                                <div
-                                                    class="h-10 w-10 rounded-full bg-gradient-to-tr from-orange-500 to-red-500 flex items-center justify-center text-white font-bold">
-                                                    DT</div>
-                                                <div>
-                                                    <p class="text-white text-sm font-medium">David Touré</p>
-                                                    <p class="text-[#9db9a6] text-xs">david.t@example.com</p>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td class="px-6 py-4">
-                                            <div class="flex items-center gap-2">
-                                                <span
-                                                    class="material-symbols-outlined text-purple-400 text-[18px]">diversity_3</span>
-                                                <span class="text-white text-sm">Family</span>
-                                            </div>
-                                        </td>
-                                        <td class="px-6 py-4">
-                                            <span
-                                                class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-[#0bda43]/10 text-[#0bda43] border border-[#0bda43]/20">
-                                                <span class="h-1.5 w-1.5 rounded-full bg-[#0bda43]"></span>
-                                                Active
-                                            </span>
-                                        </td>
-                                        <td class="px-6 py-4 text-[#9db9a6] text-sm">Oct 15, 2024</td>
-                                        <td class="px-6 py-4 text-right">
-                                            <div class="flex justify-end items-center gap-2">
-                                                <button
-                                                    class="p-2 rounded-lg text-[#9db9a6] hover:bg-white/10 hover:text-white transition-colors"
-                                                    title="Edit User">
-                                                    <span class="material-symbols-outlined text-[20px]">edit</span>
-                                                </button>
-                                                <div class="h-4 w-[1px] bg-white/10"></div>
-                                                <button
-                                                    class="p-2 rounded-lg text-red-400 hover:bg-red-500/10 hover:text-red-500 transition-colors"
-                                                    title="Deactivate Account">
-                                                    <span class="material-symbols-outlined text-[20px]">block</span>
-                                                </button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr class="group hover:bg-white/5 transition-colors">
-                                        <td class="px-6 py-4">
-                                            <input
-                                                class="w-4 h-4 text-primary bg-surface-dark border-white/20 rounded focus:ring-primary focus:ring-2 focus:ring-offset-background-dark"
-                                                type="checkbox" />
-                                        </td>
-                                        <td class="px-6 py-4">
-                                            <div class="flex items-center gap-3">
-                                                <div
-                                                    class="h-10 w-10 rounded-full bg-gradient-to-tr from-pink-500 to-rose-500 flex items-center justify-center text-white font-bold">
-                                                    EM</div>
-                                                <div>
-                                                    <p class="text-white text-sm font-medium">Elena Muller</p>
-                                                    <p class="text-[#9db9a6] text-xs">e.muller@germany.de</p>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td class="px-6 py-4">
-                                            <div class="flex items-center gap-2">
-                                                <span
-                                                    class="material-symbols-outlined text-[#9db9a6] text-[18px]">person</span>
-                                                <span class="text-white text-sm">Visitor</span>
-                                            </div>
-                                        </td>
-                                        <td class="px-6 py-4">
-                                            <span
-                                                class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-[#0bda43]/10 text-[#0bda43] border border-[#0bda43]/20">
-                                                <span class="h-1.5 w-1.5 rounded-full bg-[#0bda43]"></span>
-                                                Active
-                                            </span>
-                                        </td>
-                                        <td class="px-6 py-4 text-[#9db9a6] text-sm">Oct 10, 2024</td>
-                                        <td class="px-6 py-4 text-right">
-                                            <div class="flex justify-end items-center gap-2">
-                                                <button
-                                                    class="p-2 rounded-lg text-[#9db9a6] hover:bg-white/10 hover:text-white transition-colors"
-                                                    title="Edit User">
-                                                    <span class="material-symbols-outlined text-[20px]">edit</span>
-                                                </button>
-                                                <div class="h-4 w-[1px] bg-white/10"></div>
-                                                <button
-                                                    class="p-2 rounded-lg text-red-400 hover:bg-red-500/10 hover:text-red-500 transition-colors"
-                                                    title="Deactivate Account">
-                                                    <span class="material-symbols-outlined text-[20px]">block</span>
-                                                </button>
-                                            </div>
-                                        </td>
-                                    </tr>
+                                    <?php foreach ($users as $user): ?>
+                                        <?php
+                                        
+                                        if ($user['approved'] == 1 && $user['role'] !== 'NOTAPPROVED' && $user['role'] !== 'admin'):
+
+                                            $words = explode(" ", $user['nom']);
+                                            $initials = strtoupper(substr($words[0], 0, 1));
+                                            if (count($words) > 1) {
+                                                $initials .= strtoupper(substr($words[1], 0, 1));
+                                            }
+                                            ?>
+                                            <tr class="group hover:bg-white/5 transition-colors">
+                                                <td class="px-6 py-4">
+                                                    <div class="flex items-center gap-3">
+                                                        <div
+                                                            class="h-10 w-10 rounded-full bg-gradient-to-tr from-emerald-500 to-teal-500 flex items-center justify-center text-white font-bold text-xs">
+                                                            <?= htmlspecialchars($initials) ?>
+                                                        </div>
+                                                        <div>
+                                                            <p class="text-white text-sm font-medium">
+                                                                <?= htmlspecialchars($user['nom']) ?></p>
+                                                            <p class="text-[#9db9a6] text-xs">
+                                                                <?= htmlspecialchars($user['email']) ?></p>
+                                                        </div>
+                                                    </div>
+                                                </td>
+
+                                                <td class="px-6 py-4">
+                                                    <div class="flex items-center gap-2">
+                                                        <span
+                                                            class="material-symbols-outlined <?= $user['role'] === 'admin' ? 'text-purple-400' : 'text-blue-400' ?> text-[18px]">
+                                                            <?= $user['role'] === 'admin' ? 'verified_user' : 'person' ?>
+                                                        </span>
+                                                        <span
+                                                            class="text-white text-sm capitalize"><?= htmlspecialchars($user['role']) ?></span>
+                                                    </div>
+                                                </td>
+
+                                                <td class="px-6 py-4">
+                                                    <?php if ($user['isactive']): ?>
+                                                        <span
+                                                            class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-[#0bda43]/10 text-[#0bda43] border border-[#0bda43]/20">
+                                                            <span class="h-1.5 w-1.5 rounded-full bg-[#0bda43]"></span>
+                                                            Active
+                                                        </span>
+                                                    <?php else: ?>
+                                                        <span
+                                                            class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-red-500/10 text-red-400 border border-red-500/20">
+                                                            <span class="h-1.5 w-1.5 rounded-full bg-red-400"></span>
+                                                            Inactive
+                                                        </span>
+                                                    <?php endif; ?>
+                                                </td>
+
+                                                <td class="px-6 py-4 text-right">
+                                                    <div class="flex justify-end items-center gap-2">
+                                                        
+                                                        <div class="h-4 w-[1px] bg-white/10"></div>
+                                                        <a href="./status.php?id=<?=$user['id_user']?>&status=<?=$user['isactive']?>"
+                                                            class="p-2 rounded-lg <?= $user['isactive'] ? 'text-red-400' : 'text-primary' ?> hover:bg-white/10 transition-colors">
+                                                            <span class="material-symbols-outlined text-[20px]">
+                                                                <?= $user['isactive'] ? 'block' : 'power_settings_new' ?>
+                                                            </span>
+                                                    </a>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        <?php endif;  ?>
+                                    <?php endforeach;  ?>
                                 </tbody>
                             </table>
                         </div>
-                        <div
-                            class="p-4 border-t border-white/5 flex items-center justify-between text-sm text-[#9db9a6]">
-                            <p>Showing <span class="text-white font-medium">1</span> to <span
-                                    class="text-white font-medium">5</span> of <span
-                                    class="text-white font-medium">24,593</span> results</p>
-                            <div class="flex gap-2">
-                                <button
-                                    class="px-3 py-1.5 rounded-lg border border-white/10 hover:bg-white/5 hover:text-white disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                                    disabled="">Previous</button>
-                                <button
-                                    class="px-3 py-1.5 rounded-lg border border-white/10 hover:bg-white/5 hover:text-white transition-colors">Next</button>
-                            </div>
-                        </div>
+
                     </div>
                 </div>
             </div>
