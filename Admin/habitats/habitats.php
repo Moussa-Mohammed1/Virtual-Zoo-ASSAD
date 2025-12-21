@@ -1,3 +1,18 @@
+<?php
+include './../../config.php';
+session_start();
+$logged = $_SESSION['loggeduser'] ?? ['nom' => 'Admin User', 'email' => 'admin@assad.zoo'];
+
+$habitats = [];
+$sql = "SELECT h.*, COUNT(a.id_animal) AS animal_count FROM habitat h LEFT JOIN animal a ON a.id_habitat = h.id_habitat GROUP BY h.id_habitat ORDER BY h.id_habitat DESC";
+$res = $conn->query($sql);
+if ($res) {
+    while ($r = $res->fetch_assoc()) {
+        $habitats[] = $r;
+    }
+}
+
+?>
 <!DOCTYPE html>
 <html class="dark" lang="en">
 
@@ -167,32 +182,32 @@
                 <span class="material-symbols-outlined group-hover:scale-110 transition-transform">map</span>
                 <p class="text-sm font-medium leading-normal">Guided Tours</p>
             </a>
-            <div class="pt-4 mt-4 border-t border-[#28392e]">
-                <p class="px-3 text-xs font-semibold text-[#5a6b60] uppercase tracking-wider mb-2">System</p>
-                <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-surface-dark/50 transition-colors group text-[#9db9a6] hover:text-white"
-                    href="#">
-                    <span class="material-symbols-outlined group-hover:scale-110 transition-transform">settings</span>
-                    <p class="text-sm font-medium leading-normal">Settings</p>
-                </a>
-                <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-surface-dark/50 transition-colors group text-[#9db9a6] hover:text-white"
-                    href="#">
-                    <span class="material-symbols-outlined group-hover:scale-110 transition-transform">help</span>
-                    <p class="text-sm font-medium leading-normal">Support</p>
-                </a>
-            </div>
+
         </nav>
-        <div class="p-4 border-t border-[#28392e]">
+        <div class="p-4 border-t border-[#28392e] profile-admin">
             <div
-                class="flex items-center gap-3 p-2 rounded-lg bg-surface-dark/50 hover:bg-surface-dark cursor-pointer transition-colors">
-                <div class="bg-center bg-no-repeat bg-cover rounded-full h-8 w-8"
+                class="flex items-center gap-3 p-2 rounded-lg bg-surface-dark/50 hover:bg-surface-dark transition-colors group">
+                <div class="bg-center bg-no-repeat bg-cover rounded-full h-8 w-8 shrink-0"
                     data-alt="Profile picture of the admin user"
-                    style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBKhw_hzdz9yoEDpYxdcLkdxEJGsxOm2FEwVJBj3LZ3rAHeY5Na3uNzpt1VCN2GyQBN348ClzgctgUQ-LE70ebh8ZQjAs_HoEo4FEtphuLmCmkcA7JesvqP3r1jVV8GeyA6okkfHYepeQfbA3Qe6m1IugrAfH6-vtFQ5mzPs2dXMklDDx-_iH6M7itv4BWiqejYaxS0OoH6qe4wrtIZbPEFPc_0t1T2Fv4JSw6cTlz5IFbJFjUnOp6NnfYaWOHEe-Gw5oGwkgUV-RUO");'>
-                    <script src="/ASSAD/assets/js/preloader.js" defer></script>
+                    style='background-image: url("https://avatars.githubusercontent.com/u/209652052?v=4");'>
                 </div>
-                <div class="flex flex-col">
-                    <p class="text-white text-xs font-bold">Admin User</p>
-                    <p class="text-[#9db9a6] text-[10px]">admin@assad.zoo</p>
+
+                <div class="flex flex-col flex-1 min-w-0">
+                    <p class="text-white text-xs font-bold truncate"><?= $logged['nom'] ?></p>
+                    <p class="text-[#9db9a6] text-[10px] truncate"><?= $logged['email'] ?></p>
                 </div>
+                <a href="/ASSAD/logout.php">
+                    <button
+                        class="p-1.5 rounded-md text-[#9db9a6] hover:text-red-400 hover:bg-red-400/10 transition-all"
+                        title="Logout">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                            <polyline points="16 17 21 12 16 7"></polyline>
+                            <line x1="21" y1="12" x2="9" y2="12"></line>
+                        </svg>
+                    </button>
+                </a>
             </div>
         </div>
     </aside>
@@ -217,13 +232,12 @@
                         class="block w-full pl-10 pr-3 py-2 border-none rounded-lg leading-5 bg-surface-dark text-white placeholder-[#9db9a6] focus:outline-none focus:ring-1 focus:ring-primary sm:text-sm transition-all"
                         placeholder="Search habitats by name, biome, or ID..." type="text" />
                 </div>
+                <button id="open-new-hab"
+                    class="hidden md:inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-primary text-black hover:bg-green-400 transition-colors text-sm font-medium">
+                    <span class="material-symbols-outlined">add</span>
+                    Add Habitat
+                </button>
                 <div class="flex gap-2">
-                    <button
-                        class="flex items-center justify-center h-10 w-10 rounded-lg bg-surface-dark text-white hover:bg-primary hover:text-black transition-colors relative">
-                        <span class="material-symbols-outlined text-[20px]">notifications</span>
-                        <span
-                            class="absolute top-2 right-2 h-2 w-2 rounded-full bg-red-500 border border-surface-dark"></span>
-                    </button>
                     <button
                         class="md:hidden flex items-center justify-center h-10 w-10 rounded-lg bg-surface-dark text-white hover:bg-primary hover:text-black transition-colors">
                         <span class="material-symbols-outlined text-[20px]">add_circle</span>
@@ -234,25 +248,13 @@
         <div class="flex-1 overflow-hidden flex flex-col md:flex-row">
             <div class="flex-1 overflow-y-auto p-4 md:p-6 scroll-smooth">
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-                    <div class="flex gap-2 overflow-x-auto pb-2 sm:pb-0 w-full sm:w-auto">
-                        <button
-                            class="px-4 py-2 rounded-lg bg-primary text-black text-sm font-bold whitespace-nowrap shadow-md shadow-primary/20">All
-                            Habitats</button>
-                        <button
-                            class="px-4 py-2 rounded-lg bg-surface-dark border border-white/5 text-[#9db9a6] hover:text-white hover:bg-white/5 text-sm font-medium whitespace-nowrap transition-colors">Savannah</button>
-                        <button
-                            class="px-4 py-2 rounded-lg bg-surface-dark border border-white/5 text-[#9db9a6] hover:text-white hover:bg-white/5 text-sm font-medium whitespace-nowrap transition-colors">Rainforest</button>
-                        <button
-                            class="px-4 py-2 rounded-lg bg-surface-dark border border-white/5 text-[#9db9a6] hover:text-white hover:bg-white/5 text-sm font-medium whitespace-nowrap transition-colors">Aquatic</button>
-                    </div>
+
                     <div class="flex items-center gap-3 w-full sm:w-auto">
-                        <span class="text-[#5a6b60] text-xs font-medium hidden sm:inline-block">3 items found</span>
+                        <span
+                            class="text-[#5a6b60] text-xs font-medium hidden sm:inline-block"><?php echo count($habitats); ?>
+                            habitats found</span>
                         <div class="h-4 w-px bg-white/10 hidden sm:block"></div>
-                        <button
-                            class="flex items-center gap-2 px-3 py-2 rounded-lg bg-surface-dark border border-white/5 text-[#9db9a6] hover:text-white text-sm font-medium transition-colors ml-auto sm:ml-0">
-                            <span class="material-symbols-outlined text-[18px]">sort</span>
-                            Sort by Name
-                        </button>
+
                     </div>
                 </div>
                 <div class="bg-surface-dark rounded-xl border border-white/5 overflow-hidden shadow-sm">
@@ -280,204 +282,94 @@
                                 </tr>
                             </thead>
                             <tbody class="text-sm divide-y divide-white/5">
-                                <tr class="group hover:bg-white/[0.02] transition-colors">
-                                    <td class="py-4 px-6">
-                                        <div class="flex items-center gap-4">
-                                            <div class="h-12 w-16 rounded-lg bg-cover bg-center shrink-0 border border-white/10"
-                                                style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCBN31E-LnMXibKOxw-5VyATd4Ac25sT9zyd1hccmY6RDxSfeiMrYUDVmgQZEsT6CemdFlOXAsjSRxifHqf_wH-90cIEhpR-n847Fz6JeQ8Za1bVEaCWTPbgZTMW2O7lY-29MBE0w73DMOoggjmS3LU61NenV4On70bkN0f3JYaJpcvnBPUm25l3CrwoZBeUc9ietV-1YNGbuFMXQJSvN-b8T09hw6BWKXY_DzWQAzziEs2sJu_mtTwH_0VgxoEsrjpldMjzkc3nCcl");'>
-                                            </div>
-                                            <div>
-                                                <p
-                                                    class="font-bold text-white group-hover:text-primary transition-colors">
-                                                    Serengeti Plains</p>
-                                                <p class="text-[#5a6b60] text-xs mt-0.5">Area: 12km²</p>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td class="py-4 px-6">
-                                        <span
-                                            class="px-2.5 py-1 rounded-md bg-yellow-500/10 text-yellow-500 border border-yellow-500/20 text-xs font-bold inline-block">Savannah</span>
-                                    </td>
-                                    <td class="py-4 px-6">
-                                        <div class="flex flex-col gap-1 text-[#9db9a6]">
-                                            <span class="flex items-center gap-1.5 text-xs"><span
-                                                    class="material-symbols-outlined text-[14px]">thermostat</span>
-                                                32°C</span>
-                                            <span class="flex items-center gap-1.5 text-xs"><span
-                                                    class="material-symbols-outlined text-[14px]">water_drop</span>
-                                                40%</span>
-                                        </div>
-                                    </td>
-                                    <td class="py-4 px-6">
-                                        <div class="flex -space-x-2">
-                                            <div class="h-8 w-8 rounded-full ring-2 ring-surface-dark bg-cover bg-center"
-                                                style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCBN31E-LnMXibKOxw-5VyATd4Ac25sT9zyd1hccmY6RDxSfeiMrYUDVmgQZEsT6CemdFlOXAsjSRxifHqf_wH-90cIEhpR-n847Fz6JeQ8Za1bVEaCWTPbgZTMW2O7lY-29MBE0w73DMOoggjmS3LU61NenV4On70bkN0f3JYaJpcvnBPUm25l3CrwoZBeUc9ietV-1YNGbuFMXQJSvN-b8T09hw6BWKXY_DzWQAzziEs2sJu_mtTwH_0VgxoEsrjpldMjzkc3nCcl");'
-                                                title="Lion"></div>
-                                            <div class="h-8 w-8 rounded-full ring-2 ring-surface-dark bg-cover bg-center"
-                                                style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBXYr6bkHu7Nqeo36wN2p1Is7uri7_WfHmgeaU1TDHpIDyBqRafqLqPvCTE75RDKjO7ZZaO3XBrUT9QSAco1sBdjqMeVDrsLAxqlKn9Dc6NmkI4SajI00Lui76emH3L2oyTPW1HEjEGSpzn8BVkX2QdxquIA_Pn6DZdiayVg01rq_3WobpJPGZvHqh0f0m2GJ6HHr4v_l3wIVLMrAvll9O2wOkuxizrrqWzTttQdMemDrNLp4q3TvqE43Xjd2EP0iCDvrZCfhQR7mSV");'
-                                                title="Giraffe"></div>
-                                            <div class="h-8 w-8 rounded-full ring-2 ring-surface-dark bg-cover bg-center"
-                                                style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBpKMFxyrxGaawgQIKy0d09AWsusaT1tuJt6UGTSxEGbrx6wdj5VxA9PkzGfFWau4dMq3P0oDS5ga3L-OCProEcam58LoR-9UBjzVKxjqaIplYSLNdoi7rM14JXs3kYKbNQaGhpq-Y0wZLqPVpJuUC5UEYXUpoEj3KHntC51SHuRx7oZv4d7DqqA31XjENRyVeQC21ORqwmYDj7b96KE3uPwgFf_A-zYTJafR6ZGghGlpdeOd4YN1hf7niAn8Clz9cTgrEDNC_NwTy8");'
-                                                title="Elephant"></div>
-                                            <div
-                                                class="h-8 w-8 rounded-full ring-2 ring-surface-dark bg-[#2d4034] text-white flex items-center justify-center text-[10px] font-bold">
-                                                +5</div>
-                                        </div>
-                                    </td>
-                                    <td class="py-4 px-6">
-                                        <div class="flex items-center gap-2">
-                                            <span class="relative flex h-2.5 w-2.5">
+                                <?php if (count($habitats) === 0): ?>
+                                    <tr class="group hover:bg-white/[0.02] transition-colors">
+                                        <td class="py-4 px-6" colspan="6">
+                                            <p class="text-[#9db9a6] text-sm">No habitats found.</p>
+                                        </td>
+                                    </tr>
+                                <?php else:
+                                    foreach ($habitats as $h): ?>
+                                        <tr class="group hover:bg-white/[0.02] transition-colors">
+                                            <td class="py-4 px-6">
+                                                <div class="flex items-center gap-4">
+
+                                                    <div>
+                                                        <p
+                                                            class="font-bold text-white group-hover:text-primary transition-colors">
+                                                            <?php echo htmlspecialchars($h['nom']); ?>
+                                                        </p>
+                                                        <p class="text-[#5a6b60] text-xs mt-0.5">Area:
+                                                            <?php echo htmlspecialchars($h['zonezoo'] ?: '—'); ?>
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td class="py-4 px-6">
                                                 <span
-                                                    class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
-                                                <span
-                                                    class="relative inline-flex rounded-full h-2.5 w-2.5 bg-primary"></span>
-                                            </span>
-                                            <span class="text-white text-xs font-medium">Active</span>
-                                        </div>
-                                    </td>
-                                    <td class="py-4 px-6 text-right">
-                                        <div class="flex items-center justify-end gap-2">
-                                            <button
-                                                class="h-8 w-8 rounded-lg flex items-center justify-center text-[#9db9a6] hover:text-primary hover:bg-primary/10 transition-colors"
-                                                title="Edit Details">
-                                                <span class="material-symbols-outlined text-[18px]">edit</span>
-                                            </button>
-                                            <button
-                                                class="h-8 w-8 rounded-lg flex items-center justify-center text-[#9db9a6] hover:text-red-500 hover:bg-red-500/10 transition-colors"
-                                                title="Delete Habitat">
-                                                <span class="material-symbols-outlined text-[18px]">delete</span>
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr class="group hover:bg-white/[0.02] transition-colors">
-                                    <td class="py-4 px-6">
-                                        <div class="flex items-center gap-4">
-                                            <div class="h-12 w-16 rounded-lg bg-cover bg-center shrink-0 border border-white/10"
-                                                style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBpKMFxyrxGaawgQIKy0d09AWsusaT1tuJt6UGTSxEGbrx6wdj5VxA9PkzGfFWau4dMq3P0oDS5ga3L-OCProEcam58LoR-9UBjzVKxjqaIplYSLNdoi7rM14JXs3kYKbNQaGhpq-Y0wZLqPVpJuUC5UEYXUpoEj3KHntC51SHuRx7oZv4d7DqqA31XjENRyVeQC21ORqwmYDj7b96KE3uPwgFf_A-zYTJafR6ZGghGlpdeOd4YN1hf7niAn8Clz9cTgrEDNC_NwTy8");'>
-                                            </div>
-                                            <div>
-                                                <p
-                                                    class="font-bold text-white group-hover:text-primary transition-colors">
-                                                    Elephant Valley</p>
-                                                <p class="text-[#5a6b60] text-xs mt-0.5">Area: 8km²</p>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td class="py-4 px-6">
-                                        <span
-                                            class="px-2.5 py-1 rounded-md bg-green-500/10 text-green-500 border border-green-500/20 text-xs font-bold inline-block">Rainforest</span>
-                                    </td>
-                                    <td class="py-4 px-6">
-                                        <div class="flex flex-col gap-1 text-[#9db9a6]">
-                                            <span class="flex items-center gap-1.5 text-xs"><span
-                                                    class="material-symbols-outlined text-[14px]">thermostat</span>
-                                                28°C</span>
-                                            <span class="flex items-center gap-1.5 text-xs"><span
-                                                    class="material-symbols-outlined text-[14px]">water_drop</span>
-                                                75%</span>
-                                        </div>
-                                    </td>
-                                    <td class="py-4 px-6">
-                                        <div class="flex -space-x-2">
-                                            <div class="h-8 w-8 rounded-full ring-2 ring-surface-dark bg-cover bg-center"
-                                                style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBpKMFxyrxGaawgQIKy0d09AWsusaT1tuJt6UGTSxEGbrx6wdj5VxA9PkzGfFWau4dMq3P0oDS5ga3L-OCProEcam58LoR-9UBjzVKxjqaIplYSLNdoi7rM14JXs3kYKbNQaGhpq-Y0wZLqPVpJuUC5UEYXUpoEj3KHntC51SHuRx7oZv4d7DqqA31XjENRyVeQC21ORqwmYDj7b96KE3uPwgFf_A-zYTJafR6ZGghGlpdeOd4YN1hf7niAn8Clz9cTgrEDNC_NwTy8");'>
-                                            </div>
-                                            <div
-                                                class="h-8 w-8 rounded-full ring-2 ring-surface-dark bg-[#2d4034] text-white flex items-center justify-center text-[10px] font-bold">
-                                                +12</div>
-                                        </div>
-                                    </td>
-                                    <td class="py-4 px-6">
-                                        <div class="flex items-center gap-2">
-                                            <span class="h-2.5 w-2.5 rounded-full bg-yellow-500"></span>
-                                            <span class="text-white text-xs font-medium">Maintenance</span>
-                                        </div>
-                                    </td>
-                                    <td class="py-4 px-6 text-right">
-                                        <div class="flex items-center justify-end gap-2">
-                                            <button
-                                                class="h-8 w-8 rounded-lg flex items-center justify-center text-[#9db9a6] hover:text-primary hover:bg-primary/10 transition-colors"
-                                                title="Edit Details">
-                                                <span class="material-symbols-outlined text-[18px]">edit</span>
-                                            </button>
-                                            <button
-                                                class="h-8 w-8 rounded-lg flex items-center justify-center text-[#9db9a6] hover:text-red-500 hover:bg-red-500/10 transition-colors"
-                                                title="Delete Habitat">
-                                                <span class="material-symbols-outlined text-[18px]">delete</span>
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr class="group hover:bg-white/[0.02] transition-colors">
-                                    <td class="py-4 px-6">
-                                        <div class="flex items-center gap-4">
-                                            <div class="h-12 w-16 rounded-lg bg-cover bg-center shrink-0 border border-white/10"
-                                                style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBac-1izIUX6E_GnUXLU6jprqzPCUbIk_VTdXm_rUqyaKNFbn_lnWwI-7Y16F0Uge6wdR6Ar5KzSXiAVN_jCqGZHnMzB4ga8TCr7Nslx8-YD5s3CzFJhwdfbU9BQRKV2u2U4oBHgHmFmaNV1xivsM6ppRBrYMIW-p_YgX84VM_pc2XWmJAL2-uQ2-td6_qemR_5kEAjloPJo1l2XNOQP28OGo45Eche5U81pzdNGsPBhTonVFh56fPnjvt0XW8Y9HN_8LfPsKM0WY13");'>
-                                            </div>
-                                            <div>
-                                                <p
-                                                    class="font-bold text-white group-hover:text-primary transition-colors">
-                                                    Nile Delta</p>
-                                                <p class="text-[#5a6b60] text-xs mt-0.5">Area: 4km²</p>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td class="py-4 px-6">
-                                        <span
-                                            class="px-2.5 py-1 rounded-md bg-blue-500/10 text-blue-500 border border-blue-500/20 text-xs font-bold inline-block">Aquatic</span>
-                                    </td>
-                                    <td class="py-4 px-6">
-                                        <div class="flex flex-col gap-1 text-[#9db9a6]">
-                                            <span class="flex items-center gap-1.5 text-xs"><span
-                                                    class="material-symbols-outlined text-[14px]">thermostat</span>
-                                                25°C</span>
-                                            <span class="flex items-center gap-1.5 text-xs"><span
-                                                    class="material-symbols-outlined text-[14px]">water_drop</span>
-                                                90%</span>
-                                        </div>
-                                    </td>
-                                    <td class="py-4 px-6">
-                                        <div class="flex -space-x-2">
-                                            <div
-                                                class="h-8 w-8 rounded-full ring-2 ring-surface-dark bg-[#334652] text-white flex items-center justify-center text-[10px] font-bold">
-                                                H</div>
-                                            <div
-                                                class="h-8 w-8 rounded-full ring-2 ring-surface-dark bg-[#2d4034] text-white flex items-center justify-center text-[10px] font-bold">
-                                                +8</div>
-                                        </div>
-                                    </td>
-                                    <td class="py-4 px-6">
-                                        <div class="flex items-center gap-2">
-                                            <span class="relative flex h-2.5 w-2.5">
-                                                <span
-                                                    class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
-                                                <span
-                                                    class="relative inline-flex rounded-full h-2.5 w-2.5 bg-primary"></span>
-                                            </span>
-                                            <span class="text-white text-xs font-medium">Active</span>
-                                        </div>
-                                    </td>
-                                    <td class="py-4 px-6 text-right">
-                                        <div class="flex items-center justify-end gap-2">
-                                            <button
-                                                class="h-8 w-8 rounded-lg flex items-center justify-center text-[#9db9a6] hover:text-primary hover:bg-primary/10 transition-colors"
-                                                title="Edit Details">
-                                                <span class="material-symbols-outlined text-[18px]">edit</span>
-                                            </button>
-                                            <button
-                                                class="h-8 w-8 rounded-lg flex items-center justify-center text-[#9db9a6] hover:text-red-500 hover:bg-red-500/10 transition-colors"
-                                                title="Delete Habitat">
-                                                <span class="material-symbols-outlined text-[18px]">delete</span>
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
+                                                    class="px-2.5 py-1 rounded-md bg-yellow-500/10 text-yellow-500 border border-yellow-500/20 text-xs font-bold inline-block"><?php echo htmlspecialchars($h['typeclimat']); ?></span>
+                                            </td>
+                                            <td class="py-4 px-6">
+                                                <div class="flex flex-col gap-1 text-[#9db9a6]">
+                                                    <span class="flex items-center gap-1.5 text-xs"><span
+                                                            class="material-symbols-outlined text-[14px]">thermostat</span>
+                                                        —</span>
+                                                    <span class="flex items-center gap-1.5 text-xs"><span
+                                                            class="material-symbols-outlined text-[14px]">water_drop</span>
+                                                        —</span>
+                                                </div>
+                                            </td>
+                                            <td class="py-4 px-6">
+                                                <div class="flex -space-x-2">
+                                                    <div
+                                                        class="h-8 w-8 rounded-full ring-2 ring-surface-dark bg-[#2d4034] text-white flex items-center justify-center text-[10px] font-bold">
+                                                        <?php echo (intval($h['animal_count']) > 0 ? '+' . intval($h['animal_count']) : '0'); ?>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td class="py-4 px-6">
+                                                <div class="flex items-center gap-2">
+                                                    <?php if (intval($h['animal_count']) > 0): ?>
+                                                        <span class="relative flex h-2.5 w-2.5"><span
+                                                                class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span><span
+                                                                class="relative inline-flex rounded-full h-2.5 w-2.5 bg-primary"></span></span>
+                                                        <span class="text-white text-xs font-medium">Active</span>
+                                                    <?php else: ?>
+                                                        <span class="h-2.5 w-2.5 rounded-full bg-gray-500"></span>
+                                                        <span class="text-white text-xs font-medium">Inactive</span>
+                                                    <?php endif; ?>
+                                                </div>
+                                            </td>
+                                            <td class="py-4 px-6 text-right">
+                                                <div class="flex items-center justify-end gap-2">
+                                                    <button type="button" data-id="<?php echo $h['id_habitat']; ?>"
+                                                        data-nom="<?php echo htmlspecialchars($h['nom']); ?>"
+                                                        data-typeclimat="<?php echo htmlspecialchars($h['typeclimat']); ?>"
+                                                        data-desc="<?php echo htmlspecialchars($h['description']); ?>"
+                                                        data-zonezoo="<?php echo htmlspecialchars($h['zonezoo']); ?>"
+                                                        class="h-8 w-8 rounded-lg flex items-center justify-center text-[#9db9a6] hover:text-primary hover:bg-primary/10 transition-colors edit-hab-btn"
+                                                        title="Edit Details">
+                                                        <span class="material-symbols-outlined text-[18px]">edit</span>
+                                                    </button>
+                                                    <form method="post" action="./delete.php" style="display:inline-block;">
+                                                        <input type="hidden" name="id" value="<?php echo $h['id_habitat']; ?>">
+                                                        <button type="submit"
+                                                            class="h-8 w-8 rounded-lg flex items-center justify-center text-[#9db9a6] hover:text-red-500 hover:bg-red-500/10 transition-colors"
+                                                            title="Delete Habitat">
+                                                            <span class="material-symbols-outlined text-[18px]">delete</span>
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    <?php endforeach; endif; ?>
                             </tbody>
                         </table>
                     </div>
                     <div class="px-6 py-4 border-t border-white/5 bg-black/10 flex items-center justify-between">
-                        <p class="text-xs text-[#9db9a6]">Showing 1 to 3 of 3 habitats</p>
+                        <p class="text-xs text-[#9db9a6]">Showing 1 to <?php echo count($habitats); ?> of
+                            <?php echo count($habitats); ?> habitats
+                        </p>
                         <div class="flex gap-2">
                             <button
                                 class="h-8 w-8 rounded-md bg-surface-dark border border-white/5 flex items-center justify-center text-[#9db9a6] cursor-not-allowed opacity-50">
@@ -491,133 +383,99 @@
                     </div>
                 </div>
             </div>
-            <div
-                class="w-full md:w-[400px] border-l border-[#28392e] bg-background-dark/50 backdrop-blur-xl overflow-y-auto flex flex-col h-full relative z-20 shadow-2xl">
+            <div class="fixed inset-0 backdrop-blur-sm flex justify-center items-center z-50">
                 <div
-                    class="p-6 border-b border-[#28392e] flex justify-between items-center bg-background-dark sticky top-0 z-10">
-                    <div>
-                        <h3 class="text-white text-lg font-bold">New Habitat</h3>
-                        <p class="text-[#9db9a6] text-xs">Create a new environment</p>
+                    class="w-full md:w-[400px] border-l border-[#28392e] bg-background-dark/50 backdrop-blur-xl overflow-y-auto flex flex-col h-full relative z-20 shadow-2xl">
+                    <div
+                        class="p-6 border-b border-[#28392e] flex justify-between items-center bg-background-dark sticky top-0 z-10">
+                        <div>
+                            <h3 class="text-white text-lg font-bold">New Habitat</h3>
+                            <p class="text-[#9db9a6] text-xs">Create a new environment</p>
+                        </div>
+                        <button class="text-[#9db9a6] hover:text-white transition-colors">
+                            <span class="material-symbols-outlined">close</span>
+                        </button>
                     </div>
-                    <button class="text-[#9db9a6] hover:text-white transition-colors">
-                        <span class="material-symbols-outlined">close</span>
-                    </button>
-                </div>
-                <div class="p-6 flex flex-col gap-6">
-                    <div class="space-y-4">
-                        <p class="text-xs font-bold text-white uppercase tracking-wider border-b border-white/5 pb-2">
-                            General Information</p>
-                        <div class="space-y-1.5">
-                            <label class="text-sm font-medium text-[#9db9a6]">Habitat Name</label>
-                            <input
-                                class="w-full bg-surface-dark border-none rounded-lg text-white placeholder-white/20 focus:ring-1 focus:ring-primary text-sm py-2.5"
-                                placeholder="e.g., Northern Savannah" type="text" />
-                        </div>
-                        <div class="space-y-1.5">
-                            <label class="text-sm font-medium text-[#9db9a6]">Biome Type</label>
-                            <select
-                                class="w-full bg-surface-dark border-none rounded-lg text-white focus:ring-1 focus:ring-primary text-sm py-2.5">
-                                <option>Select Biome...</option>
-                                <option>Savannah Grassland</option>
-                                <option>Tropical Rainforest</option>
-                                <option>Desert / Arid</option>
-                                <option>Wetlands / Aquatic</option>
-                            </select>
-                        </div>
-                        <div class="space-y-1.5">
-                            <label class="text-sm font-medium text-[#9db9a6]">Description</label>
-                            <textarea
-                                class="w-full bg-surface-dark border-none rounded-lg text-white placeholder-white/20 focus:ring-1 focus:ring-primary text-sm py-2.5 resize-none"
-                                placeholder="Describe the environment, vegetation, and terrain..." rows="3"></textarea>
-                        </div>
-                    </div>
-                    <div class="space-y-4">
-                        <p class="text-xs font-bold text-white uppercase tracking-wider border-b border-white/5 pb-2">
-                            Environment Controls</p>
-                        <div class="grid grid-cols-2 gap-4">
-                            <div class="space-y-1.5">
-                                <label class="text-sm font-medium text-[#9db9a6] flex items-center gap-1">
-                                    <span class="material-symbols-outlined text-xs">thermostat</span> Avg. Temp
-                                </label>
-                                <div class="relative">
-                                    <input
-                                        class="w-full bg-surface-dark border-none rounded-lg text-white focus:ring-1 focus:ring-primary text-sm py-2.5 pr-8"
-                                        type="number" value="28" />
-                                    <span class="absolute right-3 top-2.5 text-[#9db9a6] text-sm">°C</span>
+                    <form action="./create.php" method="post" class="bg-black">
+                        <div class="p-6 flex flex-col gap-6">
+                            <div class="space-y-4">
+                                <p
+                                    class="text-xs font-bold text-white uppercase tracking-wider border-b border-white/5 pb-2">
+                                    General Information</p>
+                                <div class="space-y-1.5">
+                                    <label class="text-sm font-medium text-[#9db9a6]">Habitat Name</label>
+                                    <input name="nom"
+                                        class="w-full bg-surface-dark border-none rounded-lg text-white placeholder-white/20 focus:ring-1 focus:ring-primary text-sm py-2.5"
+                                        placeholder="e.g., Northern Savannah" type="text" required />
+                                </div>
+                                <div class="space-y-1.5">
+                                    <label class="text-sm font-medium text-[#9db9a6]">Biome Type</label>
+                                    <select name="typeclimat"
+                                        class="w-full bg-surface-dark border-none rounded-lg text-white focus:ring-1 focus:ring-primary text-sm py-2.5"
+                                        required>
+                                        <option value="">Select Biome...</option>
+                                        <option>Savannah Grassland</option>
+                                        <option>Tropical Rainforest</option>
+                                        <option>Desert / Arid</option>
+                                        <option>Wetlands / Aquatic</option>
+                                    </select>
+                                </div>
+                                <div class="space-y-1.5">
+                                    <label class="text-sm font-medium text-[#9db9a6]">Description</label>
+                                    <textarea name="description"
+                                        class="w-full bg-surface-dark border-none rounded-lg text-white placeholder-white/20 focus:ring-1 focus:ring-primary text-sm py-2.5 resize-none"
+                                        placeholder="Describe the environment, vegetation, and terrain..."
+                                        rows="3"></textarea>
                                 </div>
                             </div>
-                            <div class="space-y-1.5">
-                                <label class="text-sm font-medium text-[#9db9a6] flex items-center gap-1">
-                                    <span class="material-symbols-outlined text-xs">water_drop</span> Humidity
-                                </label>
-                                <div class="relative">
-                                    <input
-                                        class="w-full bg-surface-dark border-none rounded-lg text-white focus:ring-1 focus:ring-primary text-sm py-2.5 pr-8"
-                                        type="number" value="45" />
-                                    <span class="absolute right-3 top-2.5 text-[#9db9a6] text-sm">%</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="space-y-1.5">
-                            <label class="text-sm font-medium text-[#9db9a6]">Status</label>
-                            <div class="flex gap-2">
-                                <label class="flex-1 cursor-pointer">
-                                    <input checked="" class="peer sr-only" name="status" type="radio" />
-                                    <div
-                                        class="text-center py-2 rounded-lg bg-surface-dark border border-transparent peer-checked:bg-primary/20 peer-checked:border-primary peer-checked:text-primary text-[#9db9a6] text-sm transition-all">
-                                        Active
+                            <div class="space-y-4">
+                                <p
+                                    class="text-xs font-bold text-white uppercase tracking-wider border-b border-white/5 pb-2">
+                                    Environment Controls</p>
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div class="space-y-1.5">
+                                        <label class="text-sm font-medium text-[#9db9a6] flex items-center gap-1">
+                                            <span class="material-symbols-outlined text-xs">thermostat</span> Avg. Temp
+                                        </label>
+                                        <div class="relative">
+                                            <input
+                                                class="w-full bg-surface-dark border-none rounded-lg text-white focus:ring-1 focus:ring-primary text-sm py-2.5 pr-8"
+                                                type="number" value="28" />
+                                            <span class="absolute right-3 top-2.5 text-[#9db9a6] text-sm">°C</span>
+                                        </div>
                                     </div>
-                                </label>
-                                <label class="flex-1 cursor-pointer">
-                                    <input class="peer sr-only" name="status" type="radio" />
-                                    <div
-                                        class="text-center py-2 rounded-lg bg-surface-dark border border-transparent peer-checked:bg-yellow-500/20 peer-checked:border-yellow-500 peer-checked:text-yellow-500 text-[#9db9a6] text-sm transition-all">
-                                        Maintenance
+                                    <div class="space-y-1.5">
+                                        <label class="text-sm font-medium text-[#9db9a6] flex items-center gap-1">
+                                            <span class="material-symbols-outlined text-xs">water_drop</span> Humidity
+                                        </label>
+                                        <div class="relative">
+                                            <input
+                                                class="w-full bg-surface-dark border-none rounded-lg text-white focus:ring-1 focus:ring-primary text-sm py-2.5 pr-8"
+                                                type="number" value="45" />
+                                            <span class="absolute right-3 top-2.5 text-[#9db9a6] text-sm">%</span>
+                                        </div>
                                     </div>
-                                </label>
+                                </div>
+
+                            </div>
+
+                            <input type="hidden" name="zonezoo" value="">
+                        </div>
+                        <div class="p-6 border-t border-[#28392e] bg-background-dark mt-auto sticky bottom-0">
+                            <div class="flex gap-3">
+                                <button type="button" onclick="this.form.reset();"
+                                    class="flex-1 py-2.5 rounded-lg border border-white/10 text-white hover:bg-white/5 transition-colors text-sm font-medium">Cancel</button>
+                                <button type="submit"
+                                    class="flex-1 py-2.5 rounded-lg bg-primary text-black hover:bg-white transition-colors text-sm font-bold shadow-lg shadow-primary/20">Create
+                                    Habitat</button>
                             </div>
                         </div>
-                    </div>
-                    <div class="space-y-4">
-                        <p class="text-xs font-bold text-white uppercase tracking-wider border-b border-white/5 pb-2">
-                            Associated Animals</p>
-                        <div class="bg-surface-dark rounded-lg p-3 space-y-2 border border-white/5">
-                            <div class="relative">
-                                <span
-                                    class="absolute left-2 top-2 text-[#9db9a6] material-symbols-outlined text-[18px]">search</span>
-                                <input
-                                    class="w-full bg-black/20 border-none rounded-md text-white text-xs py-2 pl-8 focus:ring-0"
-                                    placeholder="Search animals to add..." type="text" />
-                            </div>
-                            <div class="flex flex-wrap gap-2 mt-2">
-                                <div
-                                    class="flex items-center gap-1 bg-primary/10 border border-primary/20 rounded-full px-2 py-1">
-                                    <span class="text-xs text-primary font-medium">Lion (M)</span>
-                                    <button class="text-primary/70 hover:text-primary"><span
-                                            class="material-symbols-outlined text-[14px]">close</span></button>
-                                </div>
-                                <div
-                                    class="flex items-center gap-1 bg-primary/10 border border-primary/20 rounded-full px-2 py-1">
-                                    <span class="text-xs text-primary font-medium">Lion (F)</span>
-                                    <button class="text-primary/70 hover:text-primary"><span
-                                            class="material-symbols-outlined text-[14px]">close</span></button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="p-6 border-t border-[#28392e] bg-background-dark mt-auto sticky bottom-0">
-                    <div class="flex gap-3">
-                        <button
-                            class="flex-1 py-2.5 rounded-lg border border-white/10 text-white hover:bg-white/5 transition-colors text-sm font-medium">Cancel</button>
-                        <button
-                            class="flex-1 py-2.5 rounded-lg bg-primary text-black hover:bg-white transition-colors text-sm font-bold shadow-lg shadow-primary/20">Create
-                            Habitat</button>
-                    </div>
+                    </form>
                 </div>
             </div>
         </div>
     </main>
+    <script src="/ASSAD/assets/js/habitats.js"></script>
 </body>
 
 </html>
