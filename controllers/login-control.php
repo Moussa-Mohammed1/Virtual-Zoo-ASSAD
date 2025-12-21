@@ -44,10 +44,10 @@ if ($loggeduser) {
             header('Location: ./../Admin/dashboard.php');
             break;
         case 'Visitor':
-            header('Location: ./../Visitor/visitor.php');
+            header('Location: ./../Visitor/home.php');
             break;
         case 'guide':
-            header('Location: ./../Guide/guide.php');
+            header('Location: ./../Guide/dashboard.php');
             break;
     }
     exit();
