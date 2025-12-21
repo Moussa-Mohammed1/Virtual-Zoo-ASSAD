@@ -190,12 +190,12 @@ if ($result->num_rows > 0) {
                 <p class="text-sm font-medium leading-normal">Guided Tours</p>
             </a>
         </nav>
-        <div class="p-4 border-t border-[#28392e]">
+        <div class="p-4 border-t border-[#28392e] profile-admin">
             <div
                 class="flex items-center gap-3 p-2 rounded-lg bg-surface-dark/50 hover:bg-surface-dark transition-colors group">
-                <div class="bg-center bg-no-repeat bg-cover rounded-full h-8 w-8"
+                <div class="bg-center bg-no-repeat bg-cover rounded-full h-8 w-8 shrink-0"
                     data-alt="Profile picture of the admin user"
-                    style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBKhw_hzdz9yoEDpYxdcLkdxEJGsxOm2FEwVJBj3LZ3rAHeY5Na3uNzpt1VCN2GyQBN348ClzgctgUQ-LE70ebh8ZQjAs_HoEo4FEtphuLmCmkcA7JesvqP3r1jVV8GeyA6okkfHYepeQfbA3Qe6m1IugrAfH6-vtFQ5mzPs2dXMklDDx-_iH6M7itv4BWiqejYaxS0OoH6qe4wrtIZbPEFPc_0t1T2Fv4JSw6cTlz5IFbJFjUnOp6NnfYaWOHEe-Gw5oGwkgUV-RUO");'>
+                    style='background-image: url("https://avatars.githubusercontent.com/u/209652052?v=4");'>
                     <script src="/ASSAD/assets/js/preloader.js" defer></script>
                 </div>
                 <div class="flex flex-col flex-1 min-w-0">
