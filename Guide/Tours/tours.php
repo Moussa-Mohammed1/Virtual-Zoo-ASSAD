@@ -146,14 +146,12 @@ $loggedguide = $_SESSION['loggeduser'] ?? '';
     <!-- Main Content -->
     <main class="flex-grow flex justify-center py-6 sm:py-10 px-4 sm:px-6 md:px-10 lg:px-40">
         <div class="flex flex-col w-full max-w-6xl gap-6">
-            <!-- Breadcrumbs -->
             <div class="flex flex-wrap gap-2 text-sm">
                 <a class="text-gray-500 dark:text-[#9db9a6] hover:underline"
                     href="/ASSAD/guide/dashboard.php">dashboard</a>
                 <span class="text-gray-400 dark:text-[#5e7164]">/</span>
                 <span class="text-gray-900 dark:text-white font-medium">My Guided Tours</span>
             </div>
-            <!-- Page Heading & Create Button -->
             <div
                 class="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-2 border-b border-gray-200 dark:border-[#28392e]">
                 <div class="flex flex-col gap-2">
@@ -164,44 +162,8 @@ $loggedguide = $_SESSION['loggeduser'] ?? '';
                         visitors.
                     </p>
                 </div>
-                <!-- removed duplicate Create button to match other pages -->
             </div>
-            <!-- Filters & Search -->
-            <div
-                class="bg-surface-light dark:bg-surface-dark rounded-xl p-4 shadow-sm border border-gray-200 dark:border-[#28392e] flex flex-col lg:flex-row gap-4 justify-between items-start lg:items-center">
-                <!-- Search -->
-                <div class="w-full lg:w-96 relative">
-                    <span
-                        class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-[#9db9a6]">search</span>
-                    <input
-                        class="w-full h-11 pl-10 pr-4 rounded-lg bg-gray-50 dark:bg-[#1a2920] border-gray-200 dark:border-[#28392e] text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-[#6b8273] focus:ring-2 focus:ring-primary focus:border-transparent text-sm"
-                        placeholder="Search tours by title or animal..." type="text" />
-                </div>
-                <!-- Chips -->
-                <div class="flex flex-wrap gap-2 w-full lg:w-auto overflow-x-auto pb-1 lg:pb-0 no-scrollbar">
-                    <button
-                        class="h-9 px-4 rounded-full text-sm font-medium bg-primary text-[#111813] whitespace-nowrap shadow-sm">
-                        All Statuses
-                    </button>
-                    <button
-                        class="h-9 px-4 rounded-full text-sm font-medium bg-gray-100 dark:bg-[#28392e] text-gray-600 dark:text-white hover:bg-gray-200 dark:hover:bg-[#344a3c] transition-colors whitespace-nowrap">
-                        Upcoming
-                    </button>
-                    <button
-                        class="h-9 px-4 rounded-full text-sm font-medium bg-gray-100 dark:bg-[#28392e] text-gray-600 dark:text-white hover:bg-gray-200 dark:hover:bg-[#344a3c] transition-colors whitespace-nowrap">
-                        Drafts
-                    </button>
-                    <button
-                        class="h-9 px-4 rounded-full text-sm font-medium bg-gray-100 dark:bg-[#28392e] text-gray-600 dark:text-white hover:bg-gray-200 dark:hover:bg-[#344a3c] transition-colors whitespace-nowrap">
-                        Completed
-                    </button>
-                    <button
-                        class="h-9 px-4 rounded-full text-sm font-medium bg-gray-100 dark:bg-[#28392e] text-gray-600 dark:text-white hover:bg-gray-200 dark:hover:bg-[#344a3c] transition-colors whitespace-nowrap">
-                        Cancelled
-                    </button>
-                </div>
-            </div>
-            <!-- Tours List -->
+            
             <div class="flex flex-col gap-4">
                 <?php
                 if (empty($loggedguide) || empty($loggedguide['id_user'])) {
