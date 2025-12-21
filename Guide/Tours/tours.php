@@ -246,14 +246,16 @@ $loggedguide = $_SESSION['loggeduser'] ?? '';
                                 <div class="w-full md:w-48 lg:w-60 h-48 md:h-auto shrink-0 relative rounded-lg overflow-hidden">
                                     <div
                                         class="absolute top-3 left-3 <?php echo $status_badge; ?> text-xs font-bold px-2 py-1 rounded shadow-sm z-10">
-                                        <?php echo htmlspecialchars($status); ?></div>
+                                        <?php echo htmlspecialchars($status); ?>
+                                    </div>
                                 </div>
                                 <div class="flex-1 flex flex-col justify-between gap-4">
                                     <div class="flex justify-between items-start gap-4">
                                         <div>
                                             <h3
                                                 class="text-xl font-bold text-gray-900 dark:text-white mb-1 group-hover:text-primary transition-colors cursor-pointer">
-                                                <?= htmlspecialchars($t['titre']) ?></h3>
+                                                <?= htmlspecialchars($t['titre']) ?>
+                                            </h3>
                                             <div
                                                 class="flex flex-wrap gap-x-6 gap-y-2 text-sm text-gray-500 dark:text-[#9db9a6] mt-2">
                                                 <div class="flex items-center gap-1.5"><span
@@ -274,13 +276,25 @@ $loggedguide = $_SESSION['loggeduser'] ?? '';
                                         <div class="hidden md:flex items-center gap-2">
                                             <a href="/ASSAD/Guide/Tours/edit-tour.php?id=<?= $t['id_visite'] ?>"
                                                 class="size-9 rounded-lg flex items-center justify-center text-gray-500 dark:text-[#9db9a6] hover:bg-gray-100 dark:hover:bg-[#28392e] hover:text-primary transition-colors"
-                                                title="Edit Tour"><span class="material-symbols-outlined">edit</span></a>
-                                            <a href="/ASSAD/Guide/Tours/Actions/delete.php?id=<?= $t['id_visite'] ?>"
-                                                class="size-9 rounded-lg flex items-center justify-center text-gray-500 dark:text-[#9db9a6] hover:bg-red-500/10 hover:text-red-500 transition-colors"
-                                                title="Delete Tour"><span class="material-symbols-outlined">delete</span></a>
+                                                title="Edit Tour">
+                                                <span class="material-symbols-outlined">edit</span>
+                                            </a>
+
+                                            <form action="/ASSAD/Guide/Tours/Actions/delete.php" method="POST">
+                                                <input type="hidden" name="id_visite" value="<?= $t['id_visite'] ?>">
+
+                                                <button type="submit"
+                                                    class="size-9 rounded-lg flex items-center justify-center text-gray-500 dark:text-[#9db9a6] hover:bg-red-500/10 hover:text-red-500 transition-colors"
+                                                    title="Delete Tour">
+                                                    <span class="material-symbols-outlined">delete</span>
+                                                </button>
+                                            </form>
+
                                             <a href="/ASSAD/Guide/steps/steps.php?visite_id=<?= $t['id_visite'] ?>"
                                                 class="size-9 rounded-lg flex items-center justify-center text-gray-500 dark:text-[#9db9a6] hover:bg-gray-100 dark:hover:bg-[#28392e] hover:text-primary transition-colors"
-                                                title="Manage Steps"><span class="material-symbols-outlined">list</span></a>
+                                                title="Manage Steps">
+                                                <span class="material-symbols-outlined">list</span>
+                                            </a>
                                         </div>
                                     </div>
                                     <div class="mt-2">
@@ -307,23 +321,6 @@ $loggedguide = $_SESSION['loggeduser'] ?? '';
                     $stmt->close();
                 }
                 ?>
-            </div>
-            <!-- Pagination -->
-            <div class="flex items-center justify-between pt-4 border-t border-gray-200 dark:border-[#28392e]">
-                <p class="text-sm text-gray-500 dark:text-[#9db9a6]">Showing <span
-                        class="font-medium text-gray-900 dark:text-white">1</span> to <span
-                        class="font-medium text-gray-900 dark:text-white">4</span> of <span
-                        class="font-medium text-gray-900 dark:text-white">12</span> results</p>
-                <div class="flex gap-2">
-                    <button
-                        class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 bg-surface-light dark:bg-surface-dark border border-gray-300 dark:border-[#28392e] rounded-lg hover:bg-gray-50 dark:hover:bg-[#344a3c] disabled:opacity-50 disabled:cursor-not-allowed">
-                        Previous
-                    </button>
-                    <button
-                        class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 bg-surface-light dark:bg-surface-dark border border-gray-300 dark:border-[#28392e] rounded-lg hover:bg-gray-50 dark:hover:bg-[#344a3c]">
-                        Next
-                    </button>
-                </div>
             </div>
         </div>
     </main>
