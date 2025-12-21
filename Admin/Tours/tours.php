@@ -1,3 +1,34 @@
+<?php
+include './../../config.php';
+session_start();
+$logged = $_SESSION['loggeduser'] ?? ['nom' => 'Admin User', 'email' => 'admin@assad.zoo'];
+?>
+<?php
+// Stats queries
+$stmt_active = $conn->prepare("SELECT COUNT(*) AS c FROM visitesguidees WHERE status = 'ACTIVE'");
+$stmt_active->execute();
+$active_res = $stmt_active->get_result()->fetch_assoc();
+$active_count = $active_res['c'] ?? 0;
+
+$stmt_bookings_today = $conn->prepare("SELECT COUNT(*) AS c FROM reservation WHERE DATE(datereservations) = CURRENT_DATE()");
+$stmt_bookings_today->execute();
+$bookings_res = $stmt_bookings_today->get_result()->fetch_assoc();
+$bookings_today = $bookings_res['c'] ?? 0;
+
+$stmt_guides = $conn->prepare("SELECT COUNT(*) AS c FROM utilisateur WHERE role = 'guide' AND isactive = 1");
+$stmt_guides->execute();
+$guides_res = $stmt_guides->get_result()->fetch_assoc();
+$guides_online = $guides_res['c'] ?? 0;
+
+$stmt_rating = $conn->prepare("SELECT AVG(note) AS avg_note FROM commentaire");
+$stmt_rating->execute();
+$rating_res = $stmt_rating->get_result()->fetch_assoc();
+$avg_rating = $rating_res['avg_note'] ? round($rating_res['avg_note'], 1) : 'N/A';
+
+$tours_stmt = $conn->prepare("SELECT v.*, u.nom AS guide_nom, (SELECT COUNT(*) FROM reservation r WHERE r.id_visite = v.id_visite) AS reserved_count FROM visitesguidees v LEFT JOIN utilisateur u ON v.id_user = u.id_user ORDER BY v.dateheure DESC");
+$tours_stmt->execute();
+$tours_result = $tours_stmt->get_result();
+?>
 <!DOCTYPE html>
 <html class="dark" lang="en">
 
@@ -168,18 +199,30 @@
                 <p class="text-white text-sm font-medium leading-normal">Guided Tours</p>
             </a>
         </nav>
-        <div class="p-4 border-t border-[#28392e]">
+        <div class="p-4 border-t border-[#28392e] profile-admin">
             <div
-                class="flex items-center gap-3 p-2 rounded-lg bg-surface-dark/50 hover:bg-surface-dark cursor-pointer transition-colors">
-                <div class="bg-center bg-no-repeat bg-cover rounded-full h-8 w-8"
+                class="flex items-center gap-3 p-2 rounded-lg bg-surface-dark/50 hover:bg-surface-dark transition-colors group">
+                <div class="bg-center bg-no-repeat bg-cover rounded-full h-8 w-8 shrink-0"
                     data-alt="Profile picture of the admin user"
-                    style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBKhw_hzdz9yoEDpYxdcLkdxEJGsxOm2FEwVJBj3LZ3rAHeY5Na3uNzpt1VCN2GyQBN348ClzgctgUQ-LE70ebh8ZQjAs_HoEo4FEtphuLmCmkcA7JesvqP3r1jVV8GeyA6okkfHYepeQfbA3Qe6m1IugrAfH6-vtFQ5mzPs2dXMklDDx-_iH6M7itv4BWiqejYaxS0OoH6qe4wrtIZbPEFPc_0t1T2Fv4JSw6cTlz5IFbJFjUnOp6NnfYaWOHEe-Gw5oGwkgUV-RUO");'>
-                    <script src="/ASSAD/assets/js/preloader.js" defer></script>
+                    style='background-image: url("https://avatars.githubusercontent.com/u/209652052?v=4");'>
                 </div>
-                <div class="flex flex-col">
-                    <p class="text-white text-xs font-bold">Admin User</p>
-                    <p class="text-[#9db9a6] text-[10px]">admin@assad.zoo</p>
+
+                <div class="flex flex-col flex-1 min-w-0">
+                    <p class="text-white text-xs font-bold truncate"><?= $logged['nom'] ?></p>
+                    <p class="text-[#9db9a6] text-[10px] truncate"><?= $logged['email'] ?></p>
                 </div>
+                <a href="/ASSAD/logout.php">
+                    <button
+                        class="p-1.5 rounded-md text-[#9db9a6] hover:text-red-400 hover:bg-red-400/10 transition-all"
+                        title="Logout">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                            <polyline points="16 17 21 12 16 7"></polyline>
+                            <line x1="21" y1="12" x2="9" y2="12"></line>
+                        </svg>
+                    </button>
+                </a>
             </div>
         </div>
     </aside>
@@ -228,7 +271,7 @@
                                 class="text-[#0bda43] text-xs font-bold bg-[#0bda43]/10 px-2 py-1 rounded-full">+3</span>
                         </div>
                         <p class="text-[#9db9a6] text-sm font-medium">Active Tours</p>
-                        <p class="text-white text-3xl font-bold mt-1">12</p>
+                        <p class="text-white text-3xl font-bold mt-1"><?= (int) $active_count ?></p>
                     </div>
                     <div
                         class="flex flex-col p-5 bg-surface-dark rounded-xl border border-white/5 hover:border-primary/30 transition-colors shadow-sm group">
@@ -241,7 +284,7 @@
                                 class="text-[#0bda43] text-xs font-bold bg-[#0bda43]/10 px-2 py-1 rounded-full">+24%</span>
                         </div>
                         <p class="text-[#9db9a6] text-sm font-medium">Bookings Today</p>
-                        <p class="text-white text-3xl font-bold mt-1">145</p>
+                        <p class="text-white text-3xl font-bold mt-1"><?= (int) $bookings_today ?></p>
                     </div>
                     <div
                         class="flex flex-col p-5 bg-surface-dark rounded-xl border border-white/5 hover:border-primary/30 transition-colors shadow-sm group">
@@ -254,7 +297,7 @@
                                 class="text-[#9db9a6] text-xs font-bold bg-white/5 px-2 py-1 rounded-full">Available</span>
                         </div>
                         <p class="text-[#9db9a6] text-sm font-medium">Guides Online</p>
-                        <p class="text-white text-3xl font-bold mt-1">8</p>
+                        <p class="text-white text-3xl font-bold mt-1"><?= (int) $guides_online ?></p>
                     </div>
                     <div
                         class="flex flex-col p-5 bg-surface-dark rounded-xl border border-white/5 hover:border-primary/30 transition-colors shadow-sm group">
@@ -266,7 +309,7 @@
                             <span class="text-[#9db9a6] text-xs font-bold bg-white/5 px-2 py-1 rounded-full">Avg</span>
                         </div>
                         <p class="text-[#9db9a6] text-sm font-medium">Tour Rating</p>
-                        <p class="text-white text-3xl font-bold mt-1">4.8</p>
+                        <p class="text-white text-3xl font-bold mt-1"><?= htmlspecialchars($avg_rating) ?></p>
                     </div>
                 </div>
                 <div class="grid grid-cols-1  gap-6">
@@ -302,143 +345,97 @@
                                         </tr>
                                     </thead>
                                     <tbody class="divide-y divide-white/5">
-                                        <tr class="group hover:bg-white/5 transition-colors">
-                                            <td class="px-6 py-4">
-                                                <div class="flex items-center gap-3">
-                                                    <div class="h-10 w-10 rounded-lg bg-cover bg-center shrink-0 shadow-sm"
-                                                        style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCBN31E-LnMXibKOxw-5VyATd4Ac25sT9zyd1hccmY6RDxSfeiMrYUDVmgQZEsT6CemdFlOXAsjSRxifHqf_wH-90cIEhpR-n847Fz6JeQ8Za1bVEaCWTPbgZTMW2O7lY-29MBE0w73DMOoggjmS3LU61NenV4On70bkN0f3JYaJpcvnBPUm25l3CrwoZBeUc9ietV-1YNGbuFMXQJSvN-b8T09hw6BWKXY_DzWQAzziEs2sJu_mtTwH_0VgxoEsrjpldMjzkc3nCcl");'>
+                                        <?php while ($tour = $tours_result->fetch_assoc()):
+                                            $start = new DateTime($tour['dateheure']);
+                                            $end = clone $start;
+                                            $duree = (int) $tour['duree'];
+                                            if ($duree > 0) {
+                                                $end->modify("+{$duree} minutes");
+                                            }
+                                            $today = new DateTime();
+                                            $tomorrow = (new DateTime())->modify('+1 day');
+                                            $whenLabel = $start->format('M j, Y');
+                                            if ($start->format('Y-m-d') === $today->format('Y-m-d')) {
+                                                $whenLabel = 'Today';
+                                            } elseif ($start->format('Y-m-d') === $tomorrow->format('Y-m-d')) {
+                                                $whenLabel = 'Tomorrow';
+                                            }
+                                            $capacity = (int) $tour['capacite_max'];
+                                            $reserved = (int) $tour['reserved_count'];
+                                            $percent = $capacity > 0 ? round(($reserved / $capacity) * 100) : 0;
+                                            $status = strtoupper($tour['status'] ?? 'OFFLINE');
+                                            if ($status === 'ACTIVE') {
+                                                $badgeClass = 'bg-[#0bda43]/10 text-[#0bda43] border-[#0bda43]/20';
+                                            } elseif ($status === 'SCHEDULED' || $status === 'SCHEDULE') {
+                                                $badgeClass = 'bg-blue-500/10 text-blue-400 border-blue-500/20';
+                                            } else {
+                                                $badgeClass = 'bg-white/5 text-[#9db9a6] border-white/10';
+                                            }
+                                            ?>
+                                            <tr class="group hover:bg-white/5 transition-colors">
+                                                <td class="px-6 py-4">
+                                                    <div class="flex items-center gap-3">
+                                                        <div class="h-10 w-10 rounded-lg bg-cover bg-center shrink-0 shadow-sm"
+                                                            style='background-image: url("<?= htmlspecialchars($tour['image'] ?? '/ASSAD/assets/img/default-tour.jpg') ?>");'>
+                                                        </div>
+                                                        <div>
+                                                            <p class="text-white text-sm font-bold">
+                                                                <?= htmlspecialchars($tour['titre']) ?></p>
+                                                            <p class="text-[#9db9a6] text-xs">Duration: <?= $duree ?> min
+                                                            </p>
+                                                        </div>
                                                     </div>
-                                                    <div>
-                                                        <p class="text-white text-sm font-bold">Pride Lands Safari</p>
-                                                        <p class="text-[#9db9a6] text-xs">Featured: Lions</p>
+                                                </td>
+                                                <td class="px-6 py-4">
+                                                    <div class="flex items-center gap-2">
+                                                        <div
+                                                            class="h-6 w-6 rounded-full bg-primary flex items-center justify-center text-[10px] text-black font-bold">
+                                                            <?= strtoupper(substr($tour['guide_nom'] ?? 'GA', 0, 2)) ?>
+                                                        </div>
+                                                        <span
+                                                            class="text-white text-sm"><?= htmlspecialchars($tour['guide_nom'] ?? 'Guide') ?></span>
                                                     </div>
-                                                </div>
-                                            </td>
-                                            <td class="px-6 py-4">
-                                                <div class="flex items-center gap-2">
-                                                    <div
-                                                        class="h-6 w-6 rounded-full bg-blue-500 flex items-center justify-center text-[10px] text-white font-bold">
-                                                        MK</div>
-                                                    <span class="text-white text-sm">Malik K.</span>
-                                                </div>
-                                            </td>
-                                            <td class="px-6 py-4">
-                                                <p class="text-white text-sm">Today</p>
-                                                <p class="text-[#9db9a6] text-xs">10:00 AM - 11:30 AM</p>
-                                            </td>
-                                            <td class="px-6 py-4 min-w-[140px]">
-                                                <div class="flex justify-between mb-1">
-                                                    <span class="text-xs text-white">28/30</span>
-                                                    <span class="text-xs text-[#0bda43]">93%</span>
-                                                </div>
-                                                <div class="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
-                                                    <div class="h-full bg-[#0bda43] w-[93%] rounded-full"></div>
-                                                </div>
-                                            </td>
-                                            <td class="px-6 py-4">
-                                                <span
-                                                    class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-[#0bda43]/10 text-[#0bda43] border border-[#0bda43]/20">
+                                                </td>
+                                                <td class="px-6 py-4">
+                                                    <p class="text-white text-sm"><?= $whenLabel ?></p>
+                                                    <p class="text-[#9db9a6] text-xs"><?= $start->format('h:i A') ?> -
+                                                        <?= $end->format('h:i A') ?></p>
+                                                </td>
+                                                <td class="px-6 py-4 min-w-[140px]">
+                                                    <div class="flex justify-between mb-1">
+                                                        <span
+                                                            class="text-xs text-white"><?= $reserved ?>/<?= $capacity ?: '—' ?></span>
+                                                        <span
+                                                            class="text-xs text-<?= $percent >= 90 ? 'red-400' : ($percent >= 50 ? '9db9a6' : '0bda43') ?>"><?= $capacity ? $percent . '%' : '—' ?></span>
+                                                    </div>
+                                                    <div class="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
+                                                        <div class="h-full <?= $percent >= 90 ? 'bg-red-500' : ($percent >= 50 ? 'bg-primary' : 'bg-[#0bda43]') ?>"
+                                                            style="width:<?= max(0, min(100, $percent)) ?>%;"></div>
+                                                    </div>
+                                                </td>
+                                                <td class="px-6 py-4">
                                                     <span
-                                                        class="w-1.5 h-1.5 rounded-full bg-[#0bda43] animate-pulse"></span>
-                                                    Live
-                                                </span>
-                                            </td>
-                                            <td class="px-6 py-4 text-right">
-                                                <button class="text-[#9db9a6] hover:text-white transition-colors p-1">
-                                                    <span class="material-symbols-outlined text-[20px]">more_vert</span>
-                                                </button>
-                                            </td>
-                                        </tr>
-                                        <tr class="group hover:bg-white/5 transition-colors">
-                                            <td class="px-6 py-4">
-                                                <div class="flex items-center gap-3">
-                                                    <div class="h-10 w-10 rounded-lg bg-cover bg-center shrink-0 shadow-sm"
-                                                        style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBpKMFxyrxGaawgQIKy0d09AWsusaT1tuJt6UGTSxEGbrx6wdj5VxA9PkzGfFWau4dMq3P0oDS5ga3L-OCProEcam58LoR-9UBjzVKxjqaIplYSLNdoi7rM14JXs3kYKbNQaGhpq-Y0wZLqPVpJuUC5UEYXUpoEj3KHntC51SHuRx7oZv4d7DqqA31XjENRyVeQC21ORqwmYDj7b96KE3uPwgFf_A-zYTJafR6ZGghGlpdeOd4YN1hf7niAn8Clz9cTgrEDNC_NwTy8");'>
-                                                    </div>
-                                                    <div>
-                                                        <p class="text-white text-sm font-bold">Elephant Wisdom</p>
-                                                        <p class="text-[#9db9a6] text-xs">Featured: Elephants</p>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td class="px-6 py-4">
-                                                <div class="flex items-center gap-2">
-                                                    <div
-                                                        class="h-6 w-6 rounded-full bg-purple-500 flex items-center justify-center text-[10px] text-white font-bold">
-                                                        AJ</div>
-                                                    <span class="text-white text-sm">Aisha J.</span>
-                                                </div>
-                                            </td>
-                                            <td class="px-6 py-4">
-                                                <p class="text-white text-sm">Today</p>
-                                                <p class="text-[#9db9a6] text-xs">02:00 PM - 03:00 PM</p>
-                                            </td>
-                                            <td class="px-6 py-4 min-w-[140px]">
-                                                <div class="flex justify-between mb-1">
-                                                    <span class="text-xs text-white">12/25</span>
-                                                    <span class="text-xs text-[#9db9a6]">48%</span>
-                                                </div>
-                                                <div class="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
-                                                    <div class="h-full bg-primary w-[48%] rounded-full"></div>
-                                                </div>
-                                            </td>
-                                            <td class="px-6 py-4">
-                                                <span
-                                                    class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-blue-500/10 text-blue-400 border border-blue-500/20">
-                                                    Scheduled
-                                                </span>
-                                            </td>
-                                            <td class="px-6 py-4 text-right">
-                                                <button class="text-[#9db9a6] hover:text-white transition-colors p-1">
-                                                    <span class="material-symbols-outlined text-[20px]">edit</span>
-                                                </button>
-                                            </td>
-                                        </tr>
-                                        <tr class="group hover:bg-white/5 transition-colors">
-                                            <td class="px-6 py-4">
-                                                <div class="flex items-center gap-3">
-                                                    <div class="h-10 w-10 rounded-lg bg-cover bg-center shrink-0 shadow-sm"
-                                                        style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBXYr6bkHu7Nqeo36wN2p1Is7uri7_WfHmgeaU1TDHpIDyBqRafqLqPvCTE75RDKjO7ZZaO3XBrUT9QSAco1sBdjqMeVDrsLAxqlKn9Dc6NmkI4SajI00Lui76emH3L2oyTPW1HEjEGSpzn8BVkX2QdxquIA_Pn6DZdiayVg01rq_3WobpJPGZvHqh0f0m2GJ6HHr4v_l3wIVLMrAvll9O2wOkuxizrrqWzTttQdMemDrNLp4q3TvqE43Xjd2EP0iCDvrZCfhQR7mSV");'>
-                                                    </div>
-                                                    <div>
-                                                        <p class="text-white text-sm font-bold">Tall Tales</p>
-                                                        <p class="text-[#9db9a6] text-xs">Featured: Giraffes</p>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td class="px-6 py-4">
-                                                <div class="flex items-center gap-2">
-                                                    <div
-                                                        class="h-6 w-6 rounded-full bg-orange-500 flex items-center justify-center text-[10px] text-white font-bold">
-                                                        KO</div>
-                                                    <span class="text-white text-sm">Kofi O.</span>
-                                                </div>
-                                            </td>
-                                            <td class="px-6 py-4">
-                                                <p class="text-white text-sm">Tomorrow</p>
-                                                <p class="text-[#9db9a6] text-xs">09:00 AM - 10:30 AM</p>
-                                            </td>
-                                            <td class="px-6 py-4 min-w-[140px]">
-                                                <div class="flex justify-between mb-1">
-                                                    <span class="text-xs text-white">40/40</span>
-                                                    <span class="text-xs text-red-400">Full</span>
-                                                </div>
-                                                <div class="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
-                                                    <div class="h-full bg-red-500 w-[100%] rounded-full"></div>
-                                                </div>
-                                            </td>
-                                            <td class="px-6 py-4">
-                                                <span
-                                                    class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-blue-500/10 text-blue-400 border border-blue-500/20">
-                                                    Scheduled
-                                                </span>
-                                            </td>
-                                            <td class="px-6 py-4 text-right">
-                                                <button class="text-[#9db9a6] hover:text-white transition-colors p-1">
-                                                    <span class="material-symbols-outlined text-[20px]">edit</span>
-                                                </button>
-                                            </td>
-                                        </tr>
+                                                        class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium <?= $badgeClass ?> border">
+                                                        <?php if ($status === 'ACTIVE'): ?>
+                                                            <span
+                                                                class="w-1.5 h-1.5 rounded-full bg-[#0bda43] animate-pulse mr-2"></span>
+                                                        <?php endif; ?>
+                                                        <?= htmlspecialchars(ucfirst(strtolower($status))) ?>
+                                                    </span>
+                                                </td>
+                                                <td class="px-6 py-4 text-right">
+                                                    <a href="./edit.php?id=<?= (int) $tour['id_visite'] ?>"
+                                                        class="text-[#9db9a6] hover:text-white transition-colors p-1">
+                                                        <span class="material-symbols-outlined text-[20px]">edit</span>
+                                                    </a>
+                                                    <a href="./delete.php?id=<?= (int) $tour['id_visite'] ?>"
+                                                        class="text-red-400 hover:text-red-300 transition-colors p-1 ml-1"
+                                                        onclick="return confirm('Delete this tour?');">
+                                                        <span class="material-symbols-outlined text-[20px]">delete</span>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        <?php endwhile; ?>
                                     </tbody>
                                 </table>
                             </div>
