@@ -86,4 +86,61 @@ document.addEventListener('DOMContentLoaded', () => {
             body.classList.remove('overflow-hidden');
         }
     });
+
+    // --- New Habitat modal show/hide logic ---
+    const createForm = document.querySelector('form[action="./create.php"]');
+    if (createForm) {
+        // find ancestor modal container (has class 'fixed')
+        let newHabModal = createForm.closest('[class*="fixed"]');
+        if (!newHabModal) newHabModal = createForm.parentElement;
+
+        // hide by default
+        if (!newHabModal.classList.contains('hidden')) newHabModal.classList.add('hidden');
+
+        const openSelectors = [];
+        // mobile add button uses class 'md:hidden' — need to escape ':' when querying
+        openSelectors.push('button.md\\:hidden');
+        openSelectors.push('.open-new-hab');
+        openSelectors.push('#open-new-hab');
+
+        const openButtons = [];
+        openSelectors.forEach(s => {
+            document.querySelectorAll(s).forEach(el => openButtons.push(el));
+        });
+
+        openButtons.forEach(btn => btn.addEventListener('click', (ev) => {
+            ev.preventDefault();
+            newHabModal.classList.remove('hidden');
+            body.classList.add('overflow-hidden');
+            const first = newHabModal.querySelector('input, textarea, select');
+            if (first) first.focus();
+        }));
+
+        // close when clicking cancel / close icon inside modal
+        newHabModal.addEventListener('click', (ev) => {
+            const btn = ev.target.closest('button');
+            if (btn) {
+                const span = btn.querySelector('span.material-symbols-outlined');
+                const text = span ? span.textContent.trim().toLowerCase() : '';
+                const btnText = btn.textContent.trim().toLowerCase();
+                if (text === 'close' || btnText === 'cancel' || btn.classList.contains('close-modal-btn')) {
+                    newHabModal.classList.add('hidden');
+                    body.classList.remove('overflow-hidden');
+                }
+            }
+            // click outside form (overlay)
+            if (ev.target === newHabModal) {
+                newHabModal.classList.add('hidden');
+                body.classList.remove('overflow-hidden');
+            }
+        });
+
+        // Esc key closes newHabModal as well
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                if (!newHabModal.classList.contains('hidden')) newHabModal.classList.add('hidden');
+                body.classList.remove('overflow-hidden');
+            }
+        });
+    }
 });
